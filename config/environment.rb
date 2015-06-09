@@ -14,6 +14,7 @@ require "sinatra/reloader" if development?
 require 'sinatra/flash'
 
 require 'erb'
+require 'hirb'
 
 Hirb.enable
 
