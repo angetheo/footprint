@@ -1,12 +1,6 @@
-# Set up gems listed in the Gemfile.
-# See: http://gembundler.com/bundler_setup.html
-#      http://stackoverflow.com/questions/7243486/why-do-you-need-require-bundler-setup
-ENV['BUNDLE_GEMFILE'] ||= File.expand_path('../../Gemfile', __FILE__)
-
-require 'bundler/setup' if File.exists?(ENV['BUNDLE_GEMFILE'])
-
 # Require gems we care about
 require 'rubygems'
+require 'bundler/setup'
 
 require 'uri'
 require 'pathname'
@@ -17,6 +11,7 @@ require 'logger'
 
 require 'sinatra'
 require "sinatra/reloader" if development?
+require 'sinatra/flash'
 
 require 'erb'
 
@@ -29,12 +24,16 @@ configure do
   # By default, Sinatra assumes that the root is the file that calls the configure block.
   # Since this is not the case for us, we set it manually.
   set :root, APP_ROOT.to_path
+  set :server, %w[puma webrick]
   # See: http://www.sinatrarb.com/faq.html#sessions
   enable :sessions
   set :session_secret, ENV['SESSION_SECRET'] || 'this is a secret shhhhh'
 
   # Set the views to
   set :views, File.join(Sinatra::Application.root, "app", "views")
+
+  # Cache static files, like JS and CSS files, for 1 month. Uncomment only after a more definitive production (since you won't modify the assets that often).
+  # set :static_cache_control, [:public, max_age: 60*60*24*30]
 end
 
 # Set up the controllers and helpers
