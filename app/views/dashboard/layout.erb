@@ -64,11 +64,11 @@
           </li>
           <!-- END ADMIN PROFILE -->
 
-          <li class="active"><a href="#"><i class="fa fa-dashboard"></i> <span class="nav-label">Dashboard</span> </a></li>
-          <li><a href="#"><i class="fa fa-bar-chart-o"></i> <span class="nav-label">footprintseo</span> </a></li>
-          <li><a href="#"><i class="fa fa-users"></i> <span class="nav-label">footprintsocial</span> </a></li>
-          <li><a href="#"><i class="fa fa-comment-o"></i> <span class="nav-label">footprintwords</span> </a></li>
-          <li class="special_link"><a href="#"><i class="fa fa-star"></i> <span class="nav-label">Upgrade</span></a></li>
+          <li class="<%= "active" if @current_tab == "" %>"><a href="/dashboard"><i class="fa fa-dashboard"></i> <span class="nav-label">Dashboard</span> </a></li>
+          <li class="<%= "active" if @current_tab == "seo" %>"><a href="/dashboard?tab=seo"><i class="fa fa-bar-chart-o"></i> <span class="nav-label">footprintseo</span> </a></li>
+          <li class="<%= "active" if @current_tab == "social" %>"><a href="/dashboard?tab=social"><i class="fa fa-users"></i> <span class="nav-label">footprintsocial</span> </a></li>
+          <li class="<%= "active" if @current_tab == "words" %>"><a href="/dashboard?tab=words"><i class="fa fa-comment-o"></i> <span class="nav-label">footprintwords</span> </a></li>
+          <li class="special_link <%= "active" if @current_tab == "plans" %>"><a href="/dashboard?tab=plans"><i class="fa fa-star"></i> <span class="nav-label">Upgrade</span></a></li>
         </ul>
       </div>
     </nav>
@@ -84,7 +84,7 @@
             <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
             <form role="search" class="navbar-form-custom" action="search_results.html">
               <div class="form-group">
-                <input type="text" placeholder="Search for something..." class="form-control" name="top-search" id="top-search">
+                <input type="text" placeholder="Ricerca..." class="form-control" name="top-search" id="top-search">
               </div>
             </form>
           </div>
