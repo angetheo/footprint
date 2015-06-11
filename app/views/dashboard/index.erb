@@ -11,3 +11,31 @@
 </div>
 <!-- END DASHBOARD HEADER -->
 
+<!-- DASHBOARD CONTENT -->
+<div class="wrapper wrapper-content animated fadeInRight">
+  <div class="row">
+    <div class="col-lg-6">
+      <div class="ibox float-e-margins">
+        <div class="ibox-content">
+          <h2>Winston ti consiglia di...</h2>
+          <small>Ecco una lista delle cose importanti da fare oggi.</small>
+          <ul class="todo-list m-t small-list">
+            <% if todos.empty? %>
+            <li>
+              <i class="fa fa-check"></i>
+              <span class="m-l-xs">Tutto fatto! Winston non ha consigli per te oggi.</span>
+            </li>
+            <% end %>
+            <% todos.each do |todo| %>
+            <li>
+              <i class="fa fa-angle-right"></i>
+              <span class="m-l-xs"><%= todo %></span>
+            </li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

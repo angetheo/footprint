@@ -1,3 +1,8 @@
 get '/dashboard' do
-  erb :'dashboard/index', :layout => :'dashboard/layout'
+  if authenticate?
+    erb :'dashboard/index', :layout => :'dashboard/layout'
+  else
+    flash[:error] = "Accedi per visualizzare il contenuto."
+    redirect '/login'
+  end
 end

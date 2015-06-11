@@ -11,7 +11,7 @@ post '/signup' do
     admin_surname: params[:admin_surname],
     email: params[:email],
     subscription_type: params[:subscription_type],
-    password: params[:password]
+    password: params[:password],
     })
 
   if @user.save!

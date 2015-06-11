@@ -5,7 +5,17 @@ helpers do
   end
 
   def current_user
-    User.find(session[:user_id])
+    if authenticate?
+      User.find(session[:user_id])
+    end
+  end
+
+  def todos
+    todos = []
+    # SEO
+    todos << "Footprint SEO ha bisogno dell'URL del tuo sito web per eseguire l'analisi. <a href=''>Inseriscilo ora.</a>" if current_user.website_url.nil?
+    # SOCIAL
+    # WORDS
   end
 
 end
