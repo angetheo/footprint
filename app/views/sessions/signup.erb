@@ -22,6 +22,9 @@
             </div>
             <h3>Benvenuto su Footprint Beta!</h3>
             <p>Crea adesso un account. Ci vorranno 2 minuti.</p>
+            <% if flash[:error] %>
+            <div class="alert alert-danger"><%= flash[:error] %></div>
+            <% end %>
             <form class="m-t" role="form" action="/signup" method="post">
                 <div class="form-group">
                     <input type="text" name="business_name" class="form-control" placeholder="Nome della tua attività" required="">
