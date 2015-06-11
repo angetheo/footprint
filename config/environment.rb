@@ -16,6 +16,8 @@ require 'sinatra/flash'
 require 'erb'
 require 'hirb'
 
+require 'bcrypt'
+
 Hirb.enable
 
 # Some helper constants for path-centric logic

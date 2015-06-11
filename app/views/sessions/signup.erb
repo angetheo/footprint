@@ -2,7 +2,6 @@
 <html>
 
 <head>
-
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -13,32 +12,46 @@
     <link href="/css/plugins/iCheck/custom.css" rel="stylesheet">
     <link href="/css/animate.css" rel="stylesheet">
     <link href="/css/style.css" rel="stylesheet">
-
 </head>
 
 <body class="gray-bg">
-
     <div class="middle-box text-center loginscreen animated fadeInDown">
         <div>
             <div>
-
                 <h1 class="logo-name">fp</h1>
-
             </div>
-            <h3>Benvenuto su Footprint!</h3>
+            <h3>Benvenuto su Footprint Beta!</h3>
             <p>Crea adesso un account. Ci vorranno 2 minuti.</p>
-            <form class="m-t" role="form" action="login.html">
+            <form class="m-t" role="form" action="/signup" method="post">
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Nome della tua attività" required="">
+                    <input type="text" name="business_name" class="form-control" placeholder="Nome della tua attività" required="">
                 </div>
                 <div class="form-group">
-                    <input type="email" class="form-control" placeholder="Email (mario@nomeazienda.it)" required="">
+                    <input type="text" name="admin_name" class="form-control" placeholder="Nome..." required="">
                 </div>
                 <div class="form-group">
-                    <input type="password" class="form-control" placeholder="Password" required="">
+                    <input type="text" name="admin_surname" class="form-control" placeholder="Cognome..." required="">
                 </div>
                 <div class="form-group">
-                    <div class="checkbox i-checks"><label> <input type="checkbox"><i></i> &nbsp; Accetto i termini e le condizioni</label></div>
+                    <input type="email" name="email" class="form-control" placeholder="Email (mario@nomeazienda.it)" required="">
+                </div>
+                <div class="form-group">
+                    <input type="password" name="password" class="form-control" placeholder="Password" required="">
+                </div>
+                <div class="form-group">
+                    <input type="password" name="password_repeat" class="form-control" placeholder="Ripeti password" required="">
+                </div>
+                <div class="form-group">
+                    <select class="form-control" name="subscription_type" required="">
+                        <option value="" selected="selected">Seleziona un tipo di account...</option>
+                        <option value="" disabled="disabled">_______________</option>
+                        <option value="essential">Essential</option>
+                        <option value="business">Business</option>
+                        <option value="premium">Premium</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <div class="checkbox i-checks"><label> <input type="checkbox" name="terms" required=""><i></i> &nbsp; Accetto i termini e le condizioni</label></div>
                 </div>
                 <button type="submit" class="btn btn-primary block full-width m-b">Iscriviti</button>
 

@@ -20,3 +20,5 @@ gem 'shotgun'
 
 gem 'faker'
 gem 'hirb'
+
+gem 'bcrypt'
