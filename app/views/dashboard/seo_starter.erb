@@ -1,0 +1,23 @@
+<!-- DASHBOARD HEADER -->
+<div class="row border-bottom white-bg dashboard-header">
+  <div class="col-sm-3">
+  </div>
+  <div class="col-sm-6 text-center">
+    <h2>Benvenuto su Fooprint SEO.</h2>
+    <small>Inserisci l'URL del tuo sito web per continuare.</small>
+    <hr>
+    <form method="post" action="/<%= current_user.id %>/website">
+      <div class="input-group">
+        <div class="input-group-addon">http://</div>
+        <input type="text" class="form-control" placeholder="www.website.com" name="website_url">
+        <span class="input-group-btn">
+          <input type="submit" class="btn btn-primary" value="Analizza!">
+        </span>
+      </div>
+      <input type="hidden" name="_method" value="put">
+    </form>
+  </div>
+  <div class="col-sm-3">
+  </div>
+</div>
+<!-- END DASHBOARD HEADER -->

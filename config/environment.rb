@@ -16,6 +16,8 @@ require 'sinatra/flash'
 require 'erb'
 require 'hirb'
 
+require 'nokogiri'
+
 require 'bcrypt'
 
 Hirb.enable

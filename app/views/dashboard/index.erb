@@ -22,22 +22,24 @@
           <h2>Winston ti consiglia di...</h2>
           <small>Ecco una lista delle cose importanti da fare oggi.</small>
           <ul class="todo-list m-t small-list">
-            <% if todos.empty? %>
+            <% if todos %>
+              <% todos.each do |todo| %>
+              <li>
+                <i class="fa fa-angle-right"></i>
+                <span class="m-l-xs"><%= todo %></span>
+              </li>
+              <% end %>
+            <% else %>
             <li>
               <i class="fa fa-check"></i>
               <span class="m-l-xs">Tutto fatto! Winston non ha consigli per te oggi.</span>
-            </li>
-            <% end %>
-            <% todos.each do |todo| %>
-            <li>
-              <i class="fa fa-angle-right"></i>
-              <span class="m-l-xs"><%= todo %></span>
             </li>
             <% end %>
           </ul>
         </div>
       </div>
     </div>
+    <!-- END TODO -->
 
     <!-- FOOTPRINT SCORE -->
     <div class="col-lg-6">
@@ -90,7 +92,7 @@
                 </li>
                 <li>
                   <h2 class="no-margins ">22 / 100</h2>
-                  <small>Punteggio footprintword</small>
+                  <small>Punteggio footprintwords</small>
                   <span class="label label-warning pull-right">Dettagli</span>
                   <div class="progress progress-mini">
                     <div style="width: 22%;" class="progress-bar progress-bar-warning"></div>
@@ -107,4 +109,5 @@
 
   </div>
 </div>
+<!-- END DASHBOARD CONTENT -->
 

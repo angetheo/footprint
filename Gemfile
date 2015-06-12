@@ -16,6 +16,8 @@ gem 'rake'
 
 gem 'puma'
 
+gem 'nokogiri'
+
 gem 'shotgun'
 
 gem 'faker'
