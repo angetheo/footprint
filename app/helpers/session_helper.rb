@@ -13,7 +13,9 @@ helpers do
   def todos
     todos = []
     # SEO
-    todos << "Footprint SEO ha bisogno dell'URL del tuo sito web per eseguire l'analisi. <a href='/dashboard?tab=seo'>Inseriscilo ora.</a>" if current_user.website_url.nil?
+    if current_user.website_url.nil? || current_user.website_url == ""
+      todos << "Footprint SEO ha bisogno dell'URL del tuo sito web per eseguire l'analisi. <a href='/dashboard?tab=seo'>Inseriscilo ora.</a>"
+    end
     # SOCIAL
     # WORDS
   end

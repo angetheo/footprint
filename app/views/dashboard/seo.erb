@@ -1,12 +1,152 @@
 <!-- DASHBOARD HEADER -->
 <div class="row border-bottom white-bg dashboard-header">
-  <div class="col-sm-3">
+  <div class="col-sm-5">
+    <h2><i class="fa fa-desktop"></i> &nbsp;<%= current_user.website_url %></h2>
+    <hr>
+    <a href="/demoseo" class="btn btn-primary btn-sm">Cancella sito e ripeti analisi</a>
   </div>
-  <div class="col-sm-6 text-center">
-    <h2><%= current_user.website_url %></h2>
-    <%= flash[:message] %>
+  <div class="col-sm-4">
+
   </div>
   <div class="col-sm-3">
+    <div class="widget navy-bg no-padding">
+      <div class="p-m">
+        <h1 class="m-xs"><%= @report.points %></h1>
+
+        <h3 class="font-bold no-margins">
+            Punteggio Footprint SEO
+        </h3>
+        <small>Ti consigliamo di incrementare fino a 73.</small>
+      </div>
+    </div>
   </div>
 </div>
 <!-- END DASHBOARD HEADER -->
+
+<!-- SEO RESULTS -->
+<div class="wrapper wrapper-content animated fadeInRight">
+  <div class="row">
+
+    <!-- STRUCTURE CHECKS -->
+    <div class="col-lg-6">
+      <div class="ibox float-e-margins">
+        <div class="ibox-title">
+          <h5>Struttura del sito</h5>
+          <div class="ibox-tools">
+            <a class="collapse-link">
+              <i class="fa fa-chevron-up"></i>
+            </a>
+            <a class="close-link">
+              <i class="fa fa-times"></i>
+            </a>
+          </div>
+        </div>
+        <div class="ibox-content">
+          <% if @report.title && @report.title.length > 70 %>
+          <h2>Titolo troppo lungo
+            <div class="stat-percent text-danger"> <%= @report.title.length %> <i class="fa fa-times"></i></div>
+          </h2>
+          <small><i class="fa fa-stack-exchange"></i> Il titolo della tua pagina è troppo lungo. Molti motori di ricerca troncano i risultati a 70 caratteri!</small>
+          <hr>
+          <% end %>
+          <% if @report.meta_description && @report.meta_description.length > 160 %>
+          <h2>Descrizione troppo lunga
+            <div class="stat-percent text-danger"> <%= @report.meta_description.length %> <i class="fa fa-times"></i></div>
+          </h2>
+          <small><i class="fa fa-stack-exchange"></i> La descrizione della pagina è lunga. I motori di ricerca tendono a troncare i risultati a 160 caratteri.</small>
+          <hr>
+          <% elsif @report.meta_description && @report.meta_description == "" %>
+          <h2>Descrizione assente
+            <div class="stat-percent text-danger"> 0 <i class="fa fa-times"></i></div>
+          </h2>
+          <small><i class="fa fa-stack-exchange"></i> Il tuo sito non ha una descrizione. I motori di ricerca avranno difficoltà a categorizzare il tuo sito.</small>
+          <hr>
+          <% end %>
+          <h2>Parole chiave
+            <div class="stat-percent text-muted"> <%= @report.body.split(', ').size %> <i class="fa fa-key"></i></div>
+          </h2>
+          <small><i class="fa fa-stack-exchange"></i> Le parole chiave più frequenti sono: "<%= @report.body %>"</small>
+          <hr>
+          <% remaining_size = (@report.body.split(', ')-@report.title.gsub(',','').split(' ').map(&:downcase)).size %>
+          <% if remaining_size >= 2 %>
+          <h2>Titolo non descrittivo
+            <div class="stat-percent text-danger"> <%= remaining_size %> <i class="fa fa-times"></i></div>
+          </h2>
+          <small><i class="fa fa-stack-exchange"></i> Delle 5 parole chiave più frequenti sul tuo sito, solo <%= 5-remaining_size %> sono presenti nel titolo.</small>
+          <hr>
+          <% end %>
+        </div>
+      </div>
+    </div>
+    <!-- END STRUCTURE CHECKS -->
+
+    <!-- SPEED CHECKS -->
+    <div class="col-lg-6">
+      <div class="ibox float-e-margins">
+        <div class="ibox-title">
+          <h5>Come appari su Google</h5>
+          <div class="ibox-tools">
+            <a class="collapse-link">
+              <i class="fa fa-chevron-up"></i>
+            </a>
+            <a class="close-link">
+              <i class="fa fa-times"></i>
+            </a>
+          </div>
+        </div>
+        <div class="ibox-content">
+          <h3 ><a href="#"><%= @report.title[0..60] %>...</a></h3>
+          <p class="text-navy"><%= current_user.website_url %></p>
+          <p><%= @report.meta_description[0..160] %></p>
+        </div>
+      </div>
+    </div>
+    <!-- END SPEED CHECKS -->
+
+  </div>
+  <div class="row">
+
+    <!-- STRUCTURE CHECKS -->
+    <div class="col-lg-6">
+      <div class="ibox float-e-margins">
+        <div class="ibox-title">
+          <h5>Sicurezza del sito</h5>
+          <div class="ibox-tools">
+            <a class="collapse-link">
+              <i class="fa fa-chevron-up"></i>
+            </a>
+            <a class="close-link">
+              <i class="fa fa-times"></i>
+            </a>
+          </div>
+        </div>
+        <div class="ibox-content">
+          <p>Nessuna analisi disponibile.</p>
+        </div>
+      </div>
+    </div>
+    <!-- END STRUCTURE CHECKS -->
+
+    <!-- MOBILE CHECKS -->
+    <div class="col-lg-6">
+      <div class="ibox float-e-margins">
+        <div class="ibox-title">
+          <h5>Compatibilità mobile</h5>
+          <div class="ibox-tools">
+            <a class="collapse-link">
+              <i class="fa fa-chevron-up"></i>
+            </a>
+            <a class="close-link">
+              <i class="fa fa-times"></i>
+            </a>
+          </div>
+        </div>
+        <div class="ibox-content">
+          <p>Nessuna analisi disponibile.</p>
+        </div>
+      </div>
+    </div>
+    <!-- END MOBILE CHECKS -->
+
+  </div>
+</div>

@@ -1,5 +1,6 @@
 get '/dashboard' do
   if authenticate?
+    @report = Seoreport.find_by(user_id: current_user.id)
 
     # NAVIGATION
     @current_tab = !!params[:tab] ? params[:tab] : ""

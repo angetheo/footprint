@@ -8,6 +8,8 @@ class CreateUsers < ActiveRecord::Migration
       t.string :password_hash
       t.string :subscription_type
       t.string :website_url
+
+      t.timestamps
     end
   end
 end

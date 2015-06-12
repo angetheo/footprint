@@ -17,6 +17,7 @@ gem 'rake'
 gem 'puma'
 
 gem 'nokogiri'
+gem 'typhoeus'
 
 gem 'shotgun'
 

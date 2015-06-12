@@ -16,7 +16,10 @@ require 'sinatra/flash'
 require 'erb'
 require 'hirb'
 
+# WEBSITE PARSING
+require 'open-uri'
 require 'nokogiri'
+require 'typhoeus'
 
 require 'bcrypt'
 

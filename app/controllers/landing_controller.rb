@@ -1,3 +1,7 @@
 get '/' do
-  erb :landing, layout: false
+  if authenticate?
+    redirect '/dashboard'
+  else
+    erb :landing, layout: false
+  end
 end

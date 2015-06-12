@@ -9,13 +9,17 @@
     <form method="post" action="/<%= current_user.id %>/website">
       <div class="input-group">
         <div class="input-group-addon">http://</div>
-        <input type="text" class="form-control" placeholder="www.website.com" name="website_url">
+        <input type="text" class="form-control" placeholder="www.website.com" name="website_url" required="">
         <span class="input-group-btn">
           <input type="submit" class="btn btn-primary" value="Analizza!">
         </span>
       </div>
       <input type="hidden" name="_method" value="put">
     </form>
+    <% if flash[:error] %>
+    <hr>
+    <div class="alert alert-danger"><%= flash[:error] %></div>
+    <% end %>
   </div>
   <div class="col-sm-3">
   </div>
