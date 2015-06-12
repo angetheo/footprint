@@ -5,8 +5,9 @@ helpers do
   def seo_analysis website
     report = Seoreport.find_by(user_id: current_user.id)
     html_doc = Nokogiri::HTML(open('http://'+website.gsub(' ','')))
+    html_doc.xpath("//script").remove
     @check_hash = {}
-    p "IN seo analysis"
+
     structure_check(html_doc, report)
 
     @check_hash
@@ -36,7 +37,7 @@ helpers do
         word.downcase!
         words[word] ? words[word] += 1 : words[word] = 1
       end
-      ['di','a','da','in','con','su','per','tra','fra','uno','una','un','dei','del','delle','della','degli','e','i','o','la','il','gli','al','alla','agli','=',':','-'].each { |k| words.delete k }
+      ['di','a','da','in','con','su','per','tra','fra','uno','una','un','dei','del','delle','della','degli','e','è','i','o','la','le','il','gli','al','alla','agli','si','no','non','tuoi','tuo','=',':','-','//','+','"','""','{','}','"";','=='].each { |k| words.delete k }
       report.body = Hash[words.sort_by { |k,v| -v }[0..4]].keys.join(', ')
 
       # RELEVANT TITLE CHECK
