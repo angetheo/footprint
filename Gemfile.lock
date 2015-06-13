@@ -1,6 +1,12 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    PageRankr (4.4.1)
+      httparty (>= 0.9.0)
+      json (>= 1.4.6)
+      jsonpath (>= 0.4.2)
+      nokogiri (>= 1.4.1)
+      public_suffix (~> 1.4.4)
     activemodel (4.1.1)
       activesupport (= 4.1.1)
       builder (~> 3.1)
@@ -24,14 +30,21 @@ GEM
       i18n (~> 0.5)
     ffi (1.9.8)
     hirb (0.7.3)
+    httparty (0.13.5)
+      json (~> 1.8)
+      multi_xml (>= 0.5.2)
     i18n (0.6.9)
     json (1.8.1)
+    jsonpath (0.5.6)
+      multi_json
     mini_portile (0.6.0)
     minitest (5.3.4)
     multi_json (1.10.1)
+    multi_xml (0.5.5)
     nokogiri (1.6.2.1)
       mini_portile (= 0.6.0)
     pg (0.17.1)
+    public_suffix (1.4.6)
     puma (2.11.3)
       rack (>= 1.1, < 2.0)
     rack (1.5.2)
@@ -66,6 +79,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  PageRankr (~> 4.4.1)
   activerecord (~> 4.1)
   activesupport (~> 4.1)
   bcrypt

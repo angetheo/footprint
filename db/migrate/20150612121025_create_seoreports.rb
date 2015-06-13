@@ -4,6 +4,9 @@ class CreateSeoreports < ActiveRecord::Migration
       t.text :title
       t.text :meta_description
       t.text :body
+      t.boolean :robots
+      t.integer :google_rank
+      t.integer :google_index
       t.references :user
 
       t.integer :points, default: 0

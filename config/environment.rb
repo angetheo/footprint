@@ -16,10 +16,11 @@ require 'sinatra/flash'
 require 'erb'
 require 'hirb'
 
-# WEBSITE PARSING
+# SEO PART
 require 'open-uri'
 require 'nokogiri'
 require 'typhoeus'
+require 'PageRankr'
 
 require 'bcrypt'
 

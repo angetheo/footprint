@@ -75,16 +75,23 @@
           <small><i class="fa fa-stack-exchange"></i> Delle 5 parole chiave più frequenti sul tuo sito, solo <%= 5-remaining_size %> sono presenti nel titolo.</small>
           <hr>
           <% end %>
+          <% if !@report.robots %>
+          <h2>File robots.txt assente
+            <div class="stat-percent text-danger"> <i class="fa fa-file-o"></i></div>
+          </h2>
+          <small><i class="fa fa-stack-exchange"></i> Non abbiamo trovato il file robots.txt. Se non limiti che i motori di ricerca possono visitare, le performance nei rankings potrebbero risentirne.</small>
+          <hr>
+          <% end %>
         </div>
       </div>
     </div>
     <!-- END STRUCTURE CHECKS -->
 
-    <!-- SPEED CHECKS -->
+    <!-- ORGANIC SEARCH RESULTS -->
     <div class="col-lg-6">
       <div class="ibox float-e-margins">
         <div class="ibox-title">
-          <h5>Come appari su Google</h5>
+          <h5>Statistiche di ricerca</h5>
           <div class="ibox-tools">
             <a class="collapse-link">
               <i class="fa fa-chevron-up"></i>
@@ -98,10 +105,40 @@
           <h3 ><a href="#"><%= @report.title[0..60] %>...</a></h3>
           <p class="text-navy"><%= current_user.website_url %></p>
           <p><%= @report.meta_description[0..160] %></p>
+          <hr>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="widget style1 navy-bg" style="margin:0">
+                <div class="row">
+                  <div class="col-xs-4">
+                    <i class="fa fa-list-ol fa-5x"></i>
+                  </div>
+                  <div class="col-xs-8 text-right">
+                    <span> Popolarità </span>
+                    <h2 class="font-bold"><%= @report.google_rank %></h2>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="widget style1 navy-bg" style="margin:0">
+                <div class="row">
+                  <div class="col-xs-4">
+                    <i class="fa fa-sitemap fa-5x"></i>
+                  </div>
+                  <div class="col-xs-8 text-right">
+                    <span> Pagine su Google </span>
+                    <h2 class="font-bold"><%= @report.google_index %></h2>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
-    <!-- END SPEED CHECKS -->
+    <!-- END ORGANIC SEARCH CHECKS -->
 
   </div>
   <div class="row">

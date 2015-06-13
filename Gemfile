@@ -18,6 +18,7 @@ gem 'puma'
 
 gem 'nokogiri'
 gem 'typhoeus'
+gem 'PageRankr', '~> 4.4.1'
 
 gem 'shotgun'
 
