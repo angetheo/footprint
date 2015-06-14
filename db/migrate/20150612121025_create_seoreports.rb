@@ -5,8 +5,13 @@ class CreateSeoreports < ActiveRecord::Migration
       t.text :meta_description
       t.text :body
       t.boolean :robots
+      t.boolean :sitemap
+      t.decimal :alt_tags, scale: 2, precision: 3
+      t.integer :inline_style
+
       t.integer :google_rank
       t.integer :google_index
+
       t.references :user
 
       t.integer :points, default: 0

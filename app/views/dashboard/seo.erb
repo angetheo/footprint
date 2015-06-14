@@ -2,8 +2,9 @@
 <div class="row border-bottom white-bg dashboard-header">
   <div class="col-sm-5">
     <h2><i class="fa fa-desktop"></i> &nbsp;<%= current_user.website_url %></h2>
+    <small><i class="fa fa-times"></i> Non verificato. Verifica ora il tuo business.</small>
     <hr>
-    <a href="/demoseo" class="btn btn-primary btn-sm">Cancella sito e ripeti analisi</a>
+    <a href="/demoseo" class="btn btn-primary btn-sm">Cancella sito e ripeti analisi</a> &nbsp;
   </div>
   <div class="col-sm-4">
 
@@ -67,19 +68,40 @@
           </h2>
           <small><i class="fa fa-stack-exchange"></i> Le parole chiave più frequenti sono: "<%= @report.body %>"</small>
           <hr>
-          <% remaining_size = (@report.body.split(', ')-@report.title.gsub(',','').split(' ').map(&:downcase)).size %>
+          <% remaining_size = (@report.body.split(', ')-@report.title.gsub(/\W/,' ').split(' ').map(&:downcase)).size %>
           <% if remaining_size >= 2 %>
           <h2>Titolo non descrittivo
             <div class="stat-percent text-danger"> <%= remaining_size %> <i class="fa fa-times"></i></div>
           </h2>
-          <small><i class="fa fa-stack-exchange"></i> Delle 5 parole chiave più frequenti sul tuo sito, solo <%= 5-remaining_size %> sono presenti nel titolo.</small>
+          <small><i class="fa fa-stack-exchange"></i> Delle 5 parole chiave più frequenti sul tuo sito, solo <%= 5-remaining_size %> sono presenti nel titolo.</small><br>
           <hr>
           <% end %>
           <% if !@report.robots %>
           <h2>File robots.txt assente
-            <div class="stat-percent text-danger"> <i class="fa fa-file-o"></i></div>
+            <div class="stat-percent text-danger"> 0 <i class="fa fa-file-o"></i></div>
           </h2>
           <small><i class="fa fa-stack-exchange"></i> Non abbiamo trovato il file robots.txt. Se non limiti che i motori di ricerca possono visitare, le performance nei rankings potrebbero risentirne.</small>
+          <hr>
+          <% end %>
+          <% if !@report.sitemap %>
+          <h2>Sitemap assente
+            <div class="stat-percent text-danger"> 0 <i class="fa fa-sitemap"></i></div>
+          </h2>
+          <small><i class="fa fa-stack-exchange"></i> Non abbiamo trovato un file sitemap. Il file sitemap XML è utile per comunicare la struttura del tuo sito ai motori di ricerca.</small>
+          <hr>
+          <% end %>
+          <% if @report.alt_tags < 0.8 %>
+          <h2>Usa "alt" più spesso nelle immagini
+            <div class="stat-percent text-danger"> <%= @report.alt_tags*100.to_s + "%" %> <i class="fa fa-photo"></i></div>
+          </h2>
+          <small><i class="fa fa-stack-exchange"></i> Usa l'attributo "alt" nelle immagini per fornire maggiori indicazioni sul contenuto nel caso l'immagine non venga caricata e per aumentare l'accessibilità del sito per gli screen readers.</small>
+          <hr>
+          <% end %>
+          <% if @report.inline_style > 5 %>
+          <h2>Usa i fogli di stile invece degli stili inline
+            <div class="stat-percent text-danger"> <%= @report.inline_style %> <i class="fa fa-paint-brush"></i></div>
+          </h2>
+          <small><i class="fa fa-stack-exchange"></i> Gli stili inline rendono il codice meno riutilizzabile, modulare e comprensibile. Utilizza i fogli di stile per dichiarare delle proprietà.</small>
           <hr>
           <% end %>
         </div>
@@ -124,7 +146,7 @@
               <div class="widget style1 navy-bg" style="margin:0">
                 <div class="row">
                   <div class="col-xs-4">
-                    <i class="fa fa-sitemap fa-5x"></i>
+                    <i class="fa fa-file-text-o fa-5x"></i>
                   </div>
                   <div class="col-xs-8 text-right">
                     <span> Pagine su Google </span>

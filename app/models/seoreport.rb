@@ -63,6 +63,41 @@ class Seoreport < ActiveRecord::Base
       self.robots = true
       self.points += 1
       @check_hash[:robots] = 'pass'
+    else
+      self.robots = false
+    end
+
+    #SITEMAP XML CHECK
+    # Basically we have to check whether there is or not an xml (or xml.gz) file
+    # in the root directory of the website. The problem is that the only way I
+    # know is to send http requests to a specific URL and check the response.
+
+    request1 = Typhoeus.get(@user.website_url+'/sitemap.xml')
+    request2 = Typhoeus.get(@user.website_url+'/sitemap.xml.gz')
+    if request1.response_code != 404 && request2.response_code != 404
+      self.sitemap = true
+      self.points += 1
+      @check_hash[:sitemap] = 'pass'
+    else
+      self.sitemap = false
+    end
+
+    #IMG ALT TAG CHECK
+    img_tags = html_doc.css('img')
+    alt_tags = html_doc.css('img').map{ |i| i['alt']}
+    self.alt_tags = alt_tags.size/img_tags.size
+    if self.alt_tags >= 0.80
+      self.points += 1
+      @check_hash[:alt_tags] = 'pass'
+    end
+
+    #INLINE CSS STYLING
+    inline_style = html_doc.css "[style]"
+    p inline_style.size
+    self.inline_style = inline_style.size
+    if self.inline_style <= 5
+      self.points += 1
+      @check_hash[:inline_style] = 'pass'
     end
 
     #GOOGLE RANKING
