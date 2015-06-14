@@ -43,53 +43,167 @@
           </div>
         </div>
         <div class="ibox-content">
+
           <% if @report.title && @report.title.length > 70 %>
-          <h2>Titolo troppo lungo
-            <div class="stat-percent text-danger"> <%= @report.title.length %> <i class="fa fa-times"></i></div>
-          </h2>
-          <small><i class="fa fa-stack-exchange"></i> Il titolo della tua pagina è troppo lungo. Molti motori di ricerca troncano i risultati a 70 caratteri!</small>
-          <hr>
+          <div class="faq-item">
+            <div class="row">
+              <div class="col-md-10">
+                <a data-toggle="collapse" href="#faq1" class="faq-question">Titolo troppo lungo <i class="fa fa-caret-down"></i></a>
+                <small>Riduci la lunghezza del titolo così che non venga troncato dai motori di ricerca.</small>
+              </div>
+              <div class="col-md-2 text-right">
+                <span class="font-bold text-danger"><%= @report.title.length %> <i class="fa fa-times"></i></span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12">
+                <div id="faq1" class="panel-collapse collapse ">
+                  <div class="faq-answer">
+                    <p>Molti motori di ricerca troncano la lunghezza del titolo a 70 caratteri o meno. Riducendo la lunghezza del titolo permetti agli utenti di vedere il titolo intero e di comprendere il contenuto del sito in base ai risultati organici di ricerca.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <% end %>
+
           <% if @report.meta_description && @report.meta_description.length > 160 %>
-          <h2>Descrizione troppo lunga
-            <div class="stat-percent text-danger"> <%= @report.meta_description.length %> <i class="fa fa-times"></i></div>
-          </h2>
-          <small><i class="fa fa-stack-exchange"></i> La descrizione della pagina è lunga. I motori di ricerca tendono a troncare i risultati a 160 caratteri.</small>
-          <hr>
+          <div class="faq-item">
+            <div class="row">
+              <div class="col-md-10">
+                <a data-toggle="collapse" href="#faq2" class="faq-question">Descrizione troppo lunga <i class="fa fa-caret-down"></i></a>
+                <small>Riduci la lunghezza della descrizione così che non venga troncato dai motori di ricerca.</small>
+              </div>
+              <div class="col-md-2 text-right">
+                <span class="font-bold text-danger"><%= @report.meta_description.length %> <i class="fa fa-times"></i></span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12">
+                <div id="faq2" class="panel-collapse collapse ">
+                  <div class="faq-answer">
+                    <p>Molti motori di ricerca troncano la lunghezza del titolo a 160 caratteri o meno. Riducendo la lunghezza della descrizione permetti agli utenti di vedere interamente la descrizione del sito sui motori di ricerca.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <% elsif @report.meta_description && @report.meta_description == "" %>
-          <h2>Descrizione assente
-            <div class="stat-percent text-danger"> 0 <i class="fa fa-times"></i></div>
-          </h2>
-          <small><i class="fa fa-stack-exchange"></i> Il tuo sito non ha una descrizione. I motori di ricerca avranno difficoltà a categorizzare il tuo sito.</small>
-          <hr>
+          <div class="faq-item">
+            <div class="row">
+              <div class="col-md-10">
+                <a data-toggle="collapse" href="#faq3" class="faq-question">Descrizione assente <i class="fa fa-caret-down"></i></a>
+                <small>Non abbiamo trovato una descrizione del sito. Aggiungine una al più presto.</small>
+              </div>
+              <div class="col-md-2 text-right">
+                <span class="small font-bold">0 <i class="fa fa-times"></i></span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12">
+                <div id="faq3" class="panel-collapse collapse ">
+                  <div class="faq-answer">
+                    <p>La descrizione del sito può essere inserita tramite i <code>meta</code> tags. E' molto importante perché permette ai motori di ricerca di comprendere il contenuto del sito e fornisce un'anteprima agli utenti che visualizzano il tuo sito nei risultati organici di ricerca. </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <% end %>
-          <h2>Parole chiave
-            <div class="stat-percent text-muted"> <%= @report.body.split(', ').size %> <i class="fa fa-key"></i></div>
-          </h2>
-          <small><i class="fa fa-stack-exchange"></i> Le parole chiave più frequenti sono: "<%= @report.body %>"</small>
-          <hr>
+
+          <div class="faq-item">
+            <div class="row">
+              <div class="col-md-10">
+                <a data-toggle="collapse" href="#faq4" class="faq-question">Parole chiave <i class="fa fa-caret-down"></i></a>
+                <small><%= @report.body.split(', ').map(&:capitalize).join(' - ') %></small>
+              </div>
+              <div class="col-md-2 text-right">
+                <span class="font-bold text-info"><%= @report.body.split(', ').size %> <i class="fa fa-key"></i></span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12">
+                <div id="faq4" class="panel-collapse collapse ">
+                  <div class="faq-answer">
+                    <p>Le parole chiave del tuo sito sono parole significative che sono presenti in misura maggiore nel corpo della tua pagina. Qui puoi osservare se le parole che abbiamo individuato sono coerenti con il contenuto del tuo sito.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <% remaining_size = (@report.body.split(', ')-@report.title.gsub(/\W/,' ').split(' ').map(&:downcase)).size %>
           <% if remaining_size >= 2 %>
-          <h2>Titolo non descrittivo
-            <div class="stat-percent text-danger"> <%= remaining_size %> <i class="fa fa-times"></i></div>
-          </h2>
-          <small><i class="fa fa-stack-exchange"></i> Delle 5 parole chiave più frequenti sul tuo sito, solo <%= 5-remaining_size %> sono presenti nel titolo.</small><br>
-          <hr>
+          <div class="faq-item">
+            <div class="row">
+              <div class="col-md-10">
+                <a data-toggle="collapse" href="#faq5" class="faq-question">Titolo non descrittivo <i class="fa fa-caret-down"></i></a>
+                <small>Delle 5 parole chiave più frequenti del tuo sito, solo <%= 5-remaining_size %> sono presenti nel titolo.</small>
+              </div>
+              <div class="col-md-2 text-right">
+                <span class="font-bold text-danger"><%= remaining_size %> <i class="fa fa-times"></i></span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12">
+                <div id="faq5" class="panel-collapse collapse ">
+                  <div class="faq-answer">
+                    <p>Il titolo della tua pagina dovrebbe riflettere i contenuti del tuo sito. Abbiamo rilevato che <%= remaining_size %> parole chiave non sono presenti nel tuo titolo. Questo potrebbe penalizzare il tuo ranking nei risultati di ricerca e impedire che il tuo sito venga categorizzato correttamente.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <% end %>
+
           <% if !@report.robots %>
-          <h2>File robots.txt assente
-            <div class="stat-percent text-danger"> 0 <i class="fa fa-file-o"></i></div>
-          </h2>
-          <small><i class="fa fa-stack-exchange"></i> Non abbiamo trovato il file robots.txt. Se non limiti che i motori di ricerca possono visitare, le performance nei rankings potrebbero risentirne.</small>
-          <hr>
+          <div class="faq-item">
+            <div class="row">
+              <div class="col-md-10">
+                <a data-toggle="collapse" href="#faq6" class="faq-question">File robots.txt assente <i class="fa fa-caret-down"></i></a>
+                <small>Non abbiamo trovato il file robots.txt nella root directory del tuo sito.</small>
+              </div>
+              <div class="col-md-2 text-right">
+                <span class="font-bold text-danger">0 <i class="fa fa-file-o"></i></span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12">
+                <div id="faq6" class="panel-collapse collapse ">
+                  <div class="faq-answer">
+                    <p>Il file robots.txt è un file di testo che specifica le pagine che un motore di ricerca può o non può indicizzare. Inoltre può specificare la posizione della Sitemap. Se non inserito, i motori di ricerca potrebbero visitare pagine che non sono intese per il pubblico. Le performance nei rankings potrebbero risentirne.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <% end %>
+
           <% if !@report.sitemap %>
-          <h2>Sitemap assente
-            <div class="stat-percent text-danger"> 0 <i class="fa fa-sitemap"></i></div>
-          </h2>
-          <small><i class="fa fa-stack-exchange"></i> Non abbiamo trovato un file sitemap. Il file sitemap XML è utile per comunicare la struttura del tuo sito ai motori di ricerca.</small>
-          <hr>
+          <div class="faq-item">
+            <div class="row">
+              <div class="col-md-10">
+                <a data-toggle="collapse" href="#faq7" class="faq-question">Sitemap non trovata <i class="fa fa-caret-down"></i></a>
+                <small>Non abbiamo trovato una sitemap nel tuo sito.</small>
+              </div>
+              <div class="col-md-2 text-right">
+                <span class="font-bold text-danger">0 <i class="fa fa-sitemap"></i></span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12">
+                <div id="faq7" class="panel-collapse collapse ">
+                  <div class="faq-answer">
+                    <p>Il file sitemap.xml serve per indicare ai motori di ricerca come devono effettuare il crawling del tuo sito, mostrando la struttura della tua applicazione tramite i link che collegano le varie pagine. Inserisci una sitemap per facilitare la definizione della struttura da parte dei motori di ricerca.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <% end %>
+
+          <!-- CONTINUA DA QUI -->
+
           <% if @report.alt_tags < 0.8 %>
           <h2>Usa "alt" più spesso nelle immagini
             <div class="stat-percent text-danger"> <%= @report.alt_tags*100.to_s + "%" %> <i class="fa fa-photo"></i></div>
@@ -106,6 +220,7 @@
           <% end %>
         </div>
       </div>
+
     </div>
     <!-- END STRUCTURE CHECKS -->
 
