@@ -19,6 +19,10 @@ put '/:user_id/website' do
   user.website_url = params[:website_url]
   user.save!
 
+  # TODO
+  # WHEN A USER STARTS THE ANALYSIS, WE SHOULD CREATE A NEW SEOREPORT
+  # THE INITIALIZE CLASS SHOULD CALL ALL THE METHODS (STRUCTURE, SPEED ...)
+
   # CREATE A NEW REPORT IF IT DOESN'T EXIST
   seo_report = Seoreport.find_by(id: params[:user_id])
   if seo_report.nil?

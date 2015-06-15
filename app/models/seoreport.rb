@@ -12,16 +12,17 @@ class Seoreport < ActiveRecord::Base
 
   def generate website_url
     html_doc = Nokogiri::HTML(open('http://'+website_url.gsub(' ','')))
+    html_doc_with_script = html_doc.dup
     html_doc.xpath("//script").remove
 
-    structure_check(html_doc)
+    structure_check(html_doc, html_doc_with_script)
   end
 
   ###################
   # STRUCTURE TESTS #
   ###################
 
-  def structure_check html_doc
+  def structure_check html_doc, html_doc_with_script
 
     # TITLE LENGTH TEST
     self.title = html_doc.css('title')[0].text
@@ -93,11 +94,52 @@ class Seoreport < ActiveRecord::Base
 
     #INLINE CSS STYLING
     inline_style = html_doc.css "[style]"
-    p inline_style.size
     self.inline_style = inline_style.size
     if self.inline_style <= 5
       self.points += 1
       @check_hash[:inline_style] = 'pass'
+    end
+
+    #FAVICON CHECK
+    default_favicon_request = Typhoeus.get(@user.website_url+'/favicon.ico')
+    link_rel_icon_elements = html_doc.xpath('//link[contains(@rel,"icon")]')
+    custom_favicon_url = link_rel_icon_elements.empty? ? nil : link_rel_icon_elements.first['href']
+    if custom_favicon_url != nil
+      if Typhoeus.get(custom_favicon_url).response_code == 200
+        self.favicon_url = custom_favicon_url
+        self.points += 1
+        @check_hash[:favicon] = 'pass'
+      elsif Typhoeus.get(@user.website_url+custom_favicon_url).response_code == 200
+        self.favicon_url = 'http://'+@user.website_url+custom_favicon_url
+        self.points += 1
+        @check_hash[:favicon] = 'pass'
+      end
+    elsif default_favicon_request.response_code == 200
+      self.favicon_url = @user.website_url+'/favicon.ico'
+      self.points += 1
+      @check_hash[:favicon] = 'pass'
+    end
+
+    #DEPRECATED HTML TAGS CHECK
+    deprecated_tags = ['applet','basefont','center','dir','embed','font','isindex','listing','menu','plaintext','s','strike','u','xmp']
+    used_tags = deprecated_tags.find_all { |deprecated_tag| html_doc.css(deprecated_tag).size > 0 }
+    if used_tags.empty?
+      self.points += 1
+      @check_hash[:favicon] = 'pass'
+    else
+      self.deprecated_tags = deprecated_tags.join(' - ')
+    end
+
+
+    #BROKEN LINKS CHECK
+    # links_status = {}
+    # all_links = html_doc.css('a').map { |link| link['href'] }
+
+    #GOOGLE ANALYTICS CHECK
+    if html_doc_with_script.xpath('//script[contains(text(), "GoogleAnalyticsObject")]')
+      self.google_analytics = true
+      self.points += 1
+      @check_hash[:google_analytics] = 'pass'
     end
 
     #GOOGLE RANKING

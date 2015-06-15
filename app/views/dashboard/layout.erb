@@ -65,9 +65,9 @@
           <!-- END ADMIN PROFILE -->
 
           <li class="<%= "active" if @current_tab == "" %>"><a href="/dashboard"><i class="fa fa-dashboard"></i> <span class="nav-label">Dashboard</span> </a></li>
-          <li class="<%= "active" if @current_tab == "seo" %>"><a href="/dashboard?tab=seo"><i class="fa fa-bar-chart-o"></i> <span class="nav-label">footprintseo</span> </a></li>
-          <li class="<%= "active" if @current_tab == "social" %>"><a href="/dashboard?tab=social"><i class="fa fa-users"></i> <span class="nav-label">footprintsocial</span> </a></li>
-          <li class="<%= "active" if @current_tab == "words" %>"><a href="/dashboard?tab=words"><i class="fa fa-comment-o"></i> <span class="nav-label">footprintwords</span> </a></li>
+          <li class="<%= "active" if @current_tab == "seo" %>"><a href="/dashboard?tab=seo"><i class="fa fa-bar-chart-o"></i> <span class="nav-label">footprint<span class="text-navy">seo</span></span> </a></li>
+          <li class="<%= "active" if @current_tab == "social" %>"><a href="/dashboard?tab=social"><i class="fa fa-users"></i> <span class="nav-label">footprint<span class="text-navy">social</span></span> </a></li>
+          <li class="<%= "active" if @current_tab == "words" %>"><a href="/dashboard?tab=words"><i class="fa fa-comment-o"></i> <span class="nav-label">footprint<span class="text-navy">words</span></span> </a></li>
           <li class="special_link <%= "active" if @current_tab == "plans" %>"><a href="/dashboard?tab=plans"><i class="fa fa-star"></i> <span class="nav-label">Upgrade</span></a></li>
         </ul>
       </div>

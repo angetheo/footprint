@@ -8,7 +8,10 @@ class CreateSeoreports < ActiveRecord::Migration
       t.boolean :sitemap
       t.decimal :alt_tags, scale: 2, precision: 3
       t.integer :inline_style
+      t.string :favicon_url
+      t.text :deprecated_tags
 
+      t.boolean :google_analytics
       t.integer :google_rank
       t.integer :google_index
 

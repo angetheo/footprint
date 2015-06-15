@@ -202,22 +202,121 @@
           </div>
           <% end %>
 
-          <!-- CONTINUA DA QUI -->
-
           <% if @report.alt_tags < 0.8 %>
-          <h2>Usa "alt" più spesso nelle immagini
-            <div class="stat-percent text-danger"> <%= @report.alt_tags*100.to_s + "%" %> <i class="fa fa-photo"></i></div>
-          </h2>
-          <small><i class="fa fa-stack-exchange"></i> Usa l'attributo "alt" nelle immagini per fornire maggiori indicazioni sul contenuto nel caso l'immagine non venga caricata e per aumentare l'accessibilità del sito per gli screen readers.</small>
-          <hr>
+          <div class="faq-item">
+            <div class="row">
+              <div class="col-md-10">
+                <a data-toggle="collapse" href="#faq8" class="faq-question">Utilizza l'attributo "alt" nelle immagini <i class="fa fa-caret-down"></i></a>
+                <small>Solo il <%= @report.alt_tags*100 %>% delle tue immagini possiede l'attributo "alt".</small>
+              </div>
+              <div class="col-md-2 text-right">
+                <span class="font-bold text-danger"> <%= @report.alt_tags*100 %>% <i class="fa fa-photo"></i></span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12">
+                <div id="faq8" class="panel-collapse collapse ">
+                  <div class="faq-answer">
+                    <p>L'attributo "alt" è il testo che viene visualizzato quando l'immagine non viene caricata per qualsiasi motivo (immagine non trovata oppure utilizzo di screen readers). Utilizza sempre l'attributo "alt" per aumentare l'accessibilità del tuo sito.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <% end %>
+
           <% if @report.inline_style > 5 %>
-          <h2>Usa i fogli di stile invece degli stili inline
-            <div class="stat-percent text-danger"> <%= @report.inline_style %> <i class="fa fa-paint-brush"></i></div>
-          </h2>
-          <small><i class="fa fa-stack-exchange"></i> Gli stili inline rendono il codice meno riutilizzabile, modulare e comprensibile. Utilizza i fogli di stile per dichiarare delle proprietà.</small>
-          <hr>
+          <div class="faq-item">
+            <div class="row">
+              <div class="col-md-10">
+                <a data-toggle="collapse" href="#faq9" class="faq-question">Utilizza i fogli di stile invece degli stili inline <i class="fa fa-caret-down"></i></a>
+                <small>Abbiamo trovato un numero elevato di stili inline che compromettono la modularità del codice.</small>
+              </div>
+              <div class="col-md-2 text-right">
+                <span class="font-bold text-danger"><%= @report.inline_style %> <i class="fa fa-paint-brush"></i></span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12">
+                <div id="faq9" class="panel-collapse collapse ">
+                  <div class="faq-answer">
+                    <p>Gli stili inline sono sconsigliati in quanto rendono il codice meno riutilizzabile e l'applicazione meno modulare. Si consiglia di incapsulare le proprietà CSS all'interno di appositi selettori nel foglio di stile.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <% end %>
+
+          <% if !@report.favicon_url %>
+          <div class="faq-item">
+            <div class="row">
+              <div class="col-md-10">
+                <a data-toggle="collapse" href="#faq10" class="faq-question">Favicon non trovato <i class="fa fa-caret-down"></i></a>
+                <small>Non siamo riusciti a trovare un tag che dichiarasse un favicon né un favicon di default.</small>
+              </div>
+              <div class="col-md-2 text-right">
+                <span class="font-bold text-danger">0 <i class="fa fa-times"></i></span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12">
+                <div id="faq10" class="panel-collapse collapse ">
+                  <div class="faq-answer">
+                    <p>La favicon è un'icona che identifica il logo del sito nelle schede di navigazione e tra i preferiti. Rende la navigazione più accessibile e il tuo brand più riconoscibile. Crea una favicon il prima possibile e aggiungila al tuo sito.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <% end %>
+
+          <% if !@report.google_analytics %>
+          <div class="faq-item">
+            <div class="row">
+              <div class="col-md-10">
+                <a data-toggle="collapse" href="#faq11" class="faq-question">Google Analytics non trovato <i class="fa fa-caret-down"></i></a>
+                <small>Non abbiamo trovato il tracker asincrono di Google Analytics nella tua home page.</small>
+              </div>
+              <div class="col-md-2 text-right">
+                <span class="font-bold text-danger">0 <i class="fa fa-code"></i></span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12">
+                <div id="faq11" class="panel-collapse collapse ">
+                  <div class="faq-answer">
+                    <p>Collegare la tua pagina web a Google Analytics ti consente di ottenere informazioni dettagliate sui visitatori della tua pagina, compresi dati demografici e geografici, tempo di permanenza su ciascuna pagina, pagine visualizzate, bounce rate e altro. Inserisci il tracker di Google Analytics nel tuo sito al più presto.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <% end %>
+
+          <% if @report.deprecated_tags && @report.deprecated_tags.split(' - ').size > 0 %>
+          <div class="faq-item">
+            <div class="row">
+              <div class="col-md-10">
+                <a data-toggle="collapse" href="#faq12" class="faq-question">Stai utilizzando elementi HTML deprecati <i class="fa fa-caret-down"></i></a>
+                <small><%= @report.deprecated_tags %></small>
+              </div>
+              <div class="col-md-2 text-right">
+                <span class="font-bold text-danger"><%= @report.deprecated_tags.split(' - ').size %> <i class="fa fa-code"></i></span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12">
+                <div id="faq12" class="panel-collapse collapse ">
+                  <div class="faq-answer">
+                    <p>Abbiamo trovato all'interno della tua pagina dei tag HTML deprecati (dalla versione 4 in poi). Ti sconsigliamo di utilizzarli in quanto la loro funzionalità non è garantita in futuro e in quanto sono disponibili soluzioni migliori (come nuovi tags oppure i fogli di stile). Utilizza la lista fornita sopra per sostituire i tag deprecati con alternative migliori.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <% end %>
+
         </div>
       </div>
 
