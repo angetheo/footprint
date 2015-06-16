@@ -1,9 +1,11 @@
 class CreateSeoreports < ActiveRecord::Migration
   def change
     create_table :seoreports do |t|
-      t.text :title
-      t.text :meta_description
-      t.text :body
+      t.hstore :title, null: false, default: {}
+      t.hstore :meta_description, null: false, default: {}
+      t.hstore :relevant_keywords, null: false, default: {}
+
+      t.text :keywords
       t.boolean :robots
       t.boolean :sitemap
       t.decimal :alt_tags, scale: 2, precision: 3
@@ -14,6 +16,7 @@ class CreateSeoreports < ActiveRecord::Migration
       t.boolean :google_analytics
       t.integer :google_rank
       t.integer :google_index
+      t.integer :google_backlinks
 
       t.references :user
 

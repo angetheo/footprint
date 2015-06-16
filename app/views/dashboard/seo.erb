@@ -1,15 +1,37 @@
 <!-- DASHBOARD HEADER -->
 <div class="row border-bottom white-bg dashboard-header">
-  <div class="col-sm-5">
-    <h2><i class="fa fa-desktop"></i> &nbsp;<%= current_user.website_url %></h2>
+  <div class="col-lg-4">
+    <h2><i class="fa fa-desktop"></i> &nbsp;<%= current_user.website_url.gsub('www.','') %></h2>
     <small><i class="fa fa-times"></i> Non verificato. Verifica ora il tuo business.</small>
     <hr>
-    <a href="/demoseo" class="btn btn-primary btn-sm">Cancella sito e ripeti analisi</a> &nbsp;
+    <a href="/demoseo" class="btn btn-primary btn-xs">Cancella sito e ripeti analisi</a> &nbsp;
   </div>
-  <div class="col-sm-4">
-
+  <div class="col-lg-4">
+    <ul class="stat-list m-t">
+    <li>
+      <small><i class="fa fa-check"></i> Test passati</small>
+      <span class="label label-primary pull-right">10</span>
+      <div class="progress progress-mini">
+        <div style="width: 50%;" class="progress-bar"></div>
+      </div>
+    </li>
+    <li>
+      <small><i class="fa fa-warning"></i> Test parzialmente passati</small>
+      <span class="label label-warning pull-right">5</span>
+      <div class="progress progress-mini">
+        <div style="width: 25%;" class="progress-bar progress-bar-warning"></div>
+      </div>
+    </li>
+    <li>
+      <small><i class="fa fa-times"></i> Test non passati</small>
+      <span class="label label-danger pull-right">4</span>
+      <div class="progress progress-mini">
+        <div style="width: 20%;" class="progress-bar progress-bar-danger"></div>
+      </div>
+    </li>
+  </ul>
   </div>
-  <div class="col-sm-3">
+  <div class="col-lg-offset-1 col-lg-3">
     <div class="widget navy-bg no-padding">
       <div class="p-m">
         <h1 class="m-xs"><%= @report.points %></h1>
@@ -32,7 +54,7 @@
     <div class="col-lg-6">
       <div class="ibox float-e-margins">
         <div class="ibox-title">
-          <h5>Struttura del sito</h5>
+          <h5>Console errori</h5>
           <div class="ibox-tools">
             <a class="collapse-link">
               <i class="fa fa-chevron-up"></i>
@@ -44,117 +66,71 @@
         </div>
         <div class="ibox-content">
 
-          <% if @report.title && @report.title.length > 70 %>
           <div class="faq-item">
             <div class="row">
               <div class="col-md-10">
-                <a data-toggle="collapse" href="#faq1" class="faq-question">Titolo troppo lungo <i class="fa fa-caret-down"></i></a>
-                <small>Riduci la lunghezza del titolo così che non venga troncato dai motori di ricerca.</small>
+                <a data-toggle="collapse" href="#faq1" class="faq-question"><%= @report.title['title'] %> <i class="fa fa-caret-down"></i></a>
+                <small><%= @report.title['subtitle'] %></small><br>
+                <small><%= priority(@report.title['priority']) %></small>
               </div>
               <div class="col-md-2 text-right">
-                <span class="font-bold text-danger"><%= @report.title.length %> <i class="fa fa-times"></i></span>
+                <span class="font-bold <%= formatter(@report.title['pass'])[0] %>"><%= @report.title['length'] %> <i class="fa <%= formatter(@report.title['pass'])[1] %>"></i></span>
               </div>
             </div>
             <div class="row">
               <div class="col-lg-12">
                 <div id="faq1" class="panel-collapse collapse ">
                   <div class="faq-answer">
-                    <p>Molti motori di ricerca troncano la lunghezza del titolo a 70 caratteri o meno. Riducendo la lunghezza del titolo permetti agli utenti di vedere il titolo intero e di comprendere il contenuto del sito in base ai risultati organici di ricerca.</p>
+                    <p><%= @report.title['description'] %></p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <% end %>
 
-          <% if @report.meta_description && @report.meta_description.length > 160 %>
           <div class="faq-item">
             <div class="row">
               <div class="col-md-10">
-                <a data-toggle="collapse" href="#faq2" class="faq-question">Descrizione troppo lunga <i class="fa fa-caret-down"></i></a>
-                <small>Riduci la lunghezza della descrizione così che non venga troncato dai motori di ricerca.</small>
+                <a data-toggle="collapse" href="#faq2" class="faq-question"><%= @report.meta_description['title'] %> <i class="fa fa-caret-down"></i></a>
+                <small><%= @report.meta_description['subtitle'] %></small><br>
+                <small><%= priority(@report.meta_description['priority']) %></small>
               </div>
               <div class="col-md-2 text-right">
-                <span class="font-bold text-danger"><%= @report.meta_description.length %> <i class="fa fa-times"></i></span>
+                <span class="font-bold <%= formatter(@report.meta_description['pass'])[0] %>"><%= @report.meta_description['page_meta_description'].size %> <i class="fa <%= formatter(@report.meta_description['pass'])[1] %>"></i></span>
               </div>
             </div>
             <div class="row">
               <div class="col-lg-12">
                 <div id="faq2" class="panel-collapse collapse ">
                   <div class="faq-answer">
-                    <p>Molti motori di ricerca troncano la lunghezza del titolo a 160 caratteri o meno. Riducendo la lunghezza della descrizione permetti agli utenti di vedere interamente la descrizione del sito sui motori di ricerca.</p>
+                    <p><%= @report.meta_description['description'] %></p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <% elsif @report.meta_description && @report.meta_description == "" %>
+
           <div class="faq-item">
             <div class="row">
               <div class="col-md-10">
-                <a data-toggle="collapse" href="#faq3" class="faq-question">Descrizione assente <i class="fa fa-caret-down"></i></a>
-                <small>Non abbiamo trovato una descrizione del sito. Aggiungine una al più presto.</small>
+                <a data-toggle="collapse" href="#faq3" class="faq-question"><%= @report.relevant_keywords['title'] %> <i class="fa fa-caret-down"></i></a>
+                <small><%= @report.relevant_keywords['subtitle'] %></small><br>
+                <small><%= priority(@report.relevant_keywords['priority']) %></small>
               </div>
               <div class="col-md-2 text-right">
-                <span class="small font-bold">0 <i class="fa fa-times"></i></span>
+                <span class="font-bold <%= formatter(@report.relevant_keywords['pass'])[0] %>"><%= @report.relevant_keywords['remaining_keywords'].split(' - ').size %> <i class="fa <%= formatter(@report.relevant_keywords['pass'])[1] %>"></i></span>
               </div>
             </div>
             <div class="row">
               <div class="col-lg-12">
                 <div id="faq3" class="panel-collapse collapse ">
                   <div class="faq-answer">
-                    <p>La descrizione del sito può essere inserita tramite i <code>meta</code> tags. E' molto importante perché permette ai motori di ricerca di comprendere il contenuto del sito e fornisce un'anteprima agli utenti che visualizzano il tuo sito nei risultati organici di ricerca. </p>
+                    <p><%= @report.relevant_keywords['description'] %></p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <% end %>
-
-          <div class="faq-item">
-            <div class="row">
-              <div class="col-md-10">
-                <a data-toggle="collapse" href="#faq4" class="faq-question">Parole chiave <i class="fa fa-caret-down"></i></a>
-                <small><%= @report.body.split(', ').map(&:capitalize).join(' - ') %></small>
-              </div>
-              <div class="col-md-2 text-right">
-                <span class="font-bold text-info"><%= @report.body.split(', ').size %> <i class="fa fa-key"></i></span>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-lg-12">
-                <div id="faq4" class="panel-collapse collapse ">
-                  <div class="faq-answer">
-                    <p>Le parole chiave del tuo sito sono parole significative che sono presenti in misura maggiore nel corpo della tua pagina. Qui puoi osservare se le parole che abbiamo individuato sono coerenti con il contenuto del tuo sito.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <% remaining_size = (@report.body.split(', ')-@report.title.gsub(/\W/,' ').split(' ').map(&:downcase)).size %>
-          <% if remaining_size >= 2 %>
-          <div class="faq-item">
-            <div class="row">
-              <div class="col-md-10">
-                <a data-toggle="collapse" href="#faq5" class="faq-question">Titolo non descrittivo <i class="fa fa-caret-down"></i></a>
-                <small>Delle 5 parole chiave più frequenti del tuo sito, solo <%= 5-remaining_size %> sono presenti nel titolo.</small>
-              </div>
-              <div class="col-md-2 text-right">
-                <span class="font-bold text-danger"><%= remaining_size %> <i class="fa fa-times"></i></span>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-lg-12">
-                <div id="faq5" class="panel-collapse collapse ">
-                  <div class="faq-answer">
-                    <p>Il titolo della tua pagina dovrebbe riflettere i contenuti del tuo sito. Abbiamo rilevato che <%= remaining_size %> parole chiave non sono presenti nel tuo titolo. Questo potrebbe penalizzare il tuo ranking nei risultati di ricerca e impedire che il tuo sito venga categorizzato correttamente.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <% end %>
 
           <% if !@report.robots %>
           <div class="faq-item">
@@ -327,7 +303,7 @@
     <div class="col-lg-6">
       <div class="ibox float-e-margins">
         <div class="ibox-title">
-          <h5>Statistiche di ricerca</h5>
+          <h5>Anteprima e statistiche di ricerca</h5>
           <div class="ibox-tools">
             <a class="collapse-link">
               <i class="fa fa-chevron-up"></i>
@@ -338,39 +314,53 @@
           </div>
         </div>
         <div class="ibox-content">
-          <h3 ><a href="#"><%= @report.title[0..60] %>...</a></h3>
-          <p class="text-navy"><%= current_user.website_url %></p>
-          <p><%= @report.meta_description[0..160] %></p>
+          <!-- GOOGLE SEARCH SNIPPET -->
+          <h3 ><a href="#"><%= @report.title['page_title'].length > 60 ? @report.title['page_title'][0..60]+'...' : @report.title['page_title'] %></a></h3>
+          <p class="text-navy font-bold"><%= current_user.website_url %></p>
+          <p><%= @report.meta_description['page_meta_description'][0..160] %></p>
+          <p><span class="font-bold text-navy">Parole chiave: </span> <small class="font-bold"><%= @report.keywords.split(', ').map(&:capitalize).join(' - ') %></small></p>
           <hr>
           <div class="row">
-            <div class="col-md-6">
-              <div class="widget style1 navy-bg" style="margin:0">
-                <div class="row">
-                  <div class="col-xs-4">
-                    <i class="fa fa-list-ol fa-5x"></i>
-                  </div>
-                  <div class="col-xs-8 text-right">
-                    <span> Popolarità </span>
-                    <h2 class="font-bold"><%= @report.google_rank %></h2>
-                  </div>
+            <div class="col-lg-4">
+              <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                  <span class="label label-warning pull-right"><i class="fa fa-warning"></i></span>
+                  <h5>Popolarità</h5>
+                </div>
+                <div class="ibox-content">
+                  <h1 class="no-margins">bassa</h1>
+                  <div class="stat-percent font-bold text-warning"> 0/10</div>
+                  <small>PageRank</small>
                 </div>
               </div>
             </div>
-            <div class="col-md-6">
-              <div class="widget style1 navy-bg" style="margin:0">
-                <div class="row">
-                  <div class="col-xs-4">
-                    <i class="fa fa-file-text-o fa-5x"></i>
-                  </div>
-                  <div class="col-xs-8 text-right">
-                    <span> Pagine su Google </span>
-                    <h2 class="font-bold"><%= @report.google_index %></h2>
-                  </div>
+            <div class="col-lg-4">
+              <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                  <span class="label label-warning pull-right"><i class="fa fa-warning"></i></span>
+                  <h5>Indice</h5>
+                </div>
+                <div class="ibox-content">
+                  <h1 class="no-margins"><%= @report.google_index %></h1>
+                  <div class="stat-percent font-bold text-success">23% <i class="fa fa-level-up"></i></div>
+                  <small>Pagine</small>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                  <span class="label label-warning pull-right"><i class="fa fa-warning"></i></span>
+                  <h5>Backlinks</h5>
+                </div>
+                <div class="ibox-content">
+                  <h1 class="no-margins"><%= @report.google_backlinks %></h1>
+                  <div class="stat-percent font-bold text-success">12% <i class="fa fa-level-up"></i></div>
+                  <small>Total views</small>
                 </div>
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </div>

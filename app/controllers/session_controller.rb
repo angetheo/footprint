@@ -7,8 +7,8 @@ end
 post '/signup' do
   @user = User.new({
     business_name: params[:business_name],
-    admin_name: params[:admin_name],
-    admin_surname: params[:admin_surname],
+    admin_name: params[:admin_name].capitalize,
+    admin_surname: params[:admin_surname].capitalize,
     email: params[:email],
     subscription_type: params[:subscription_type],
     password: params[:password],

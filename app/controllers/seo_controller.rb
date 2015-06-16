@@ -7,7 +7,7 @@ put '/:user_id/website' do
     flash[:error] = "<h3>Oops!</h3> Non siamo riusciti a trovare la pagina. Controlla di aver digitato correttamente l'indirizzo e riprova."
     redirect '/dashboard?tab=seo'
   when 500..600
-    flash[:error] = "<h3>Oops!</h3> Il sito da te digitato ha risposto con un errore del server. Riprova tra poco."
+    flash[:error] = "<h3>Oops!</h3> Non riusciamo a raggiungere il server del sito da te indicato. Riprova tra poco."
     redirect '/dashboard?tab=seo'
   when 0
     flash[:error] = "<h3>Oops!</h3> Non siamo riusciti a raggiungere il sito per un errore indefinito. Controlla l'indirizzo e riprova."
