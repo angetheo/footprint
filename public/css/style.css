@@ -6418,3 +6418,8 @@ body.skin-3 {
     display: none;
   }
 }
+
+/* Custom */
+.img-icon {
+  width:16px;
+}

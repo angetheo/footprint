@@ -90,10 +90,9 @@ $(document).ready(function () {
 
     });
 
-    // Tooltips demo
-    $('.tooltip-demo').tooltip({
-        selector: "[data-toggle=tooltip]",
-        container: "body"
+    // Tooltips
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
     });
 
     // Move modal to body

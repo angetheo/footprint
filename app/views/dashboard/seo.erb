@@ -54,7 +54,7 @@
     <div class="col-lg-6">
       <div class="ibox float-e-margins">
         <div class="ibox-title">
-          <h5>Console errori</h5>
+          <h5>Report Struttura</h5>
           <div class="ibox-tools">
             <a class="collapse-link">
               <i class="fa fa-chevron-up"></i>
@@ -118,7 +118,7 @@
                 <small><%= priority(@report.relevant_keywords['priority']) %></small>
               </div>
               <div class="col-md-2 text-right">
-                <span class="font-bold <%= formatter(@report.relevant_keywords['pass'])[0] %>"><%= @report.relevant_keywords['remaining_keywords'].split(' - ').size %> <i class="fa <%= formatter(@report.relevant_keywords['pass'])[1] %>"></i></span>
+                <span class="font-bold <%= formatter(@report.relevant_keywords['pass'])[0] %>"><%= 5-@report.relevant_keywords['remaining_keywords'].split(' - ').size %> <i class="fa <%= formatter(@report.relevant_keywords['pass'])[1] %>"></i></span>
               </div>
             </div>
             <div class="row">
@@ -132,143 +132,142 @@
             </div>
           </div>
 
-          <% if !@report.robots %>
           <div class="faq-item">
             <div class="row">
               <div class="col-md-10">
-                <a data-toggle="collapse" href="#faq6" class="faq-question">File robots.txt assente <i class="fa fa-caret-down"></i></a>
-                <small>Non abbiamo trovato il file robots.txt nella root directory del tuo sito.</small>
+                <a data-toggle="collapse" href="#faq4" class="faq-question"><%= @report.robots['title'] %> <i class="fa fa-caret-down"></i></a>
+                <small><%= @report.robots['subtitle'] %></small><br>
+                <small><%= priority(@report.robots['priority']) %></small>
               </div>
               <div class="col-md-2 text-right">
-                <span class="font-bold text-danger">0 <i class="fa fa-file-o"></i></span>
+                <span class="font-bold <%= formatter(@report.robots['pass'])[0] %>"> <i class="fa <%= formatter(@report.robots['pass'])[1] %>"></i></span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12">
+                <div id="faq4" class="panel-collapse collapse ">
+                  <div class="faq-answer">
+                    <p><%= @report.robots['description'] %></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="row">
+              <div class="col-md-10">
+                <a data-toggle="collapse" href="#faq5" class="faq-question"><%= @report.sitemap['title'] %> <i class="fa fa-caret-down"></i></a>
+                <small><%= @report.sitemap['subtitle'] %></small><br>
+                <small><%= priority(@report.sitemap['priority']) %></small>
+              </div>
+              <div class="col-md-2 text-right">
+                <span class="font-bold <%= formatter(@report.sitemap['pass'])[0] %>"> <i class="fa <%= formatter(@report.sitemap['pass'])[1] %>"></i></span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12">
+                <div id="faq5" class="panel-collapse collapse ">
+                  <div class="faq-answer">
+                    <p><%= @report.sitemap['description'] %></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="row">
+              <div class="col-md-10">
+                <a data-toggle="collapse" href="#faq6" class="faq-question"><%= @report.alt_tags['title'] %> <i class="fa fa-caret-down"></i></a>
+                <small><%= @report.alt_tags['subtitle'] %></small><br>
+                <small><%= priority(@report.alt_tags['priority']) %></small>
+              </div>
+              <div class="col-md-2 text-right">
+                <span class="font-bold <%= formatter(@report.alt_tags['pass'])[0] %>"><%= @report.alt_tags['percentage'] %> <i class="fa <%= formatter(@report.alt_tags['pass'])[1] %>"></i></span>
               </div>
             </div>
             <div class="row">
               <div class="col-lg-12">
                 <div id="faq6" class="panel-collapse collapse ">
                   <div class="faq-answer">
-                    <p>Il file robots.txt è un file di testo che specifica le pagine che un motore di ricerca può o non può indicizzare. Inoltre può specificare la posizione della Sitemap. Se non inserito, i motori di ricerca potrebbero visitare pagine che non sono intese per il pubblico. Le performance nei rankings potrebbero risentirne.</p>
+                    <p><%= @report.alt_tags['description'] %></p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <% end %>
 
-          <% if !@report.sitemap %>
           <div class="faq-item">
             <div class="row">
               <div class="col-md-10">
-                <a data-toggle="collapse" href="#faq7" class="faq-question">Sitemap non trovata <i class="fa fa-caret-down"></i></a>
-                <small>Non abbiamo trovato una sitemap nel tuo sito.</small>
+                <a data-toggle="collapse" href="#faq7" class="faq-question"><%= @report.inline_styles['title'] %> <i class="fa fa-caret-down"></i></a>
+                <small><%= @report.inline_styles['subtitle'] %></small><br>
+                <small><%= priority(@report.inline_styles['priority']) %></small>
               </div>
               <div class="col-md-2 text-right">
-                <span class="font-bold text-danger">0 <i class="fa fa-sitemap"></i></span>
+                <span class="font-bold <%= formatter(@report.inline_styles['pass'])[0] %>"><%= @report.inline_styles['inline_styles'] %> <i class="fa <%= formatter(@report.inline_styles['pass'])[1] %>"></i></span>
               </div>
             </div>
             <div class="row">
               <div class="col-lg-12">
                 <div id="faq7" class="panel-collapse collapse ">
                   <div class="faq-answer">
-                    <p>Il file sitemap.xml serve per indicare ai motori di ricerca come devono effettuare il crawling del tuo sito, mostrando la struttura della tua applicazione tramite i link che collegano le varie pagine. Inserisci una sitemap per facilitare la definizione della struttura da parte dei motori di ricerca.</p>
+                    <p><%= @report.inline_styles['description'] %></p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <% end %>
 
-          <% if @report.alt_tags < 0.8 %>
           <div class="faq-item">
             <div class="row">
               <div class="col-md-10">
-                <a data-toggle="collapse" href="#faq8" class="faq-question">Utilizza l'attributo "alt" nelle immagini <i class="fa fa-caret-down"></i></a>
-                <small>Solo il <%= @report.alt_tags*100 %>% delle tue immagini possiede l'attributo "alt".</small>
+                <a data-toggle="collapse" href="#faq8" class="faq-question"><%= @report.favicon_url['title'] %> <i class="fa fa-caret-down"></i></a>
+                <small><%= @report.favicon_url['subtitle'] %></small><br>
+                <small><%= priority(@report.favicon_url['priority']) %></small>
               </div>
               <div class="col-md-2 text-right">
-                <span class="font-bold text-danger"> <%= @report.alt_tags*100 %>% <i class="fa fa-photo"></i></span>
+                <% if @report.favicon_url['favicon_url'] != "" %>
+                <img class="img-icon" src="<%= @report.favicon_url['favicon_url'] %>">
+                <% else %>
+                <span class="text-danger font-bold"><i class="fa fa-times"></i></span>
+                <% end %>
               </div>
             </div>
             <div class="row">
               <div class="col-lg-12">
                 <div id="faq8" class="panel-collapse collapse ">
                   <div class="faq-answer">
-                    <p>L'attributo "alt" è il testo che viene visualizzato quando l'immagine non viene caricata per qualsiasi motivo (immagine non trovata oppure utilizzo di screen readers). Utilizza sempre l'attributo "alt" per aumentare l'accessibilità del tuo sito.</p>
+                    <p><%= @report.favicon_url['description'] %></p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <% end %>
 
-          <% if @report.inline_style > 5 %>
           <div class="faq-item">
             <div class="row">
               <div class="col-md-10">
-                <a data-toggle="collapse" href="#faq9" class="faq-question">Utilizza i fogli di stile invece degli stili inline <i class="fa fa-caret-down"></i></a>
-                <small>Abbiamo trovato un numero elevato di stili inline che compromettono la modularità del codice.</small>
+                <a data-toggle="collapse" href="#faq9" class="faq-question"><%= @report.google_analytics['title'] %> <i class="fa fa-caret-down"></i></a>
+                <small><%= @report.google_analytics['subtitle'] %></small><br>
+                <small><%= priority(@report.google_analytics['priority']) %></small>
               </div>
               <div class="col-md-2 text-right">
-                <span class="font-bold text-danger"><%= @report.inline_style %> <i class="fa fa-paint-brush"></i></span>
+                <span class="font-bold <%= formatter(@report.google_analytics['pass'])[0] %>"> <i class="fa <%= formatter(@report.google_analytics['pass'])[1] %>"></i></span>
               </div>
             </div>
             <div class="row">
               <div class="col-lg-12">
                 <div id="faq9" class="panel-collapse collapse ">
                   <div class="faq-answer">
-                    <p>Gli stili inline sono sconsigliati in quanto rendono il codice meno riutilizzabile e l'applicazione meno modulare. Si consiglia di incapsulare le proprietà CSS all'interno di appositi selettori nel foglio di stile.</p>
+                    <p><%= @report.google_analytics['description'] %></p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <% end %>
 
-          <% if !@report.favicon_url %>
-          <div class="faq-item">
-            <div class="row">
-              <div class="col-md-10">
-                <a data-toggle="collapse" href="#faq10" class="faq-question">Favicon non trovato <i class="fa fa-caret-down"></i></a>
-                <small>Non siamo riusciti a trovare un tag che dichiarasse un favicon né un favicon di default.</small>
-              </div>
-              <div class="col-md-2 text-right">
-                <span class="font-bold text-danger">0 <i class="fa fa-times"></i></span>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-lg-12">
-                <div id="faq10" class="panel-collapse collapse ">
-                  <div class="faq-answer">
-                    <p>La favicon è un'icona che identifica il logo del sito nelle schede di navigazione e tra i preferiti. Rende la navigazione più accessibile e il tuo brand più riconoscibile. Crea una favicon il prima possibile e aggiungila al tuo sito.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <% end %>
-
-          <% if !@report.google_analytics %>
-          <div class="faq-item">
-            <div class="row">
-              <div class="col-md-10">
-                <a data-toggle="collapse" href="#faq11" class="faq-question">Google Analytics non trovato <i class="fa fa-caret-down"></i></a>
-                <small>Non abbiamo trovato il tracker asincrono di Google Analytics nella tua home page.</small>
-              </div>
-              <div class="col-md-2 text-right">
-                <span class="font-bold text-danger">0 <i class="fa fa-code"></i></span>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-lg-12">
-                <div id="faq11" class="panel-collapse collapse ">
-                  <div class="faq-answer">
-                    <p>Collegare la tua pagina web a Google Analytics ti consente di ottenere informazioni dettagliate sui visitatori della tua pagina, compresi dati demografici e geografici, tempo di permanenza su ciascuna pagina, pagine visualizzate, bounce rate e altro. Inserisci il tracker di Google Analytics nel tuo sito al più presto.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <% end %>
 
           <% if @report.deprecated_tags && @report.deprecated_tags.split(' - ').size > 0 %>
           <div class="faq-item">
@@ -299,8 +298,8 @@
     </div>
     <!-- END STRUCTURE CHECKS -->
 
-    <!-- ORGANIC SEARCH RESULTS -->
     <div class="col-lg-6">
+      <!-- ORGANIC SEARCH RESULTS -->
       <div class="ibox float-e-margins">
         <div class="ibox-title">
           <h5>Anteprima e statistiche di ricerca</h5>
@@ -318,53 +317,69 @@
           <h3 ><a href="#"><%= @report.title['page_title'].length > 60 ? @report.title['page_title'][0..60]+'...' : @report.title['page_title'] %></a></h3>
           <p class="text-navy font-bold"><%= current_user.website_url %></p>
           <p><%= @report.meta_description['page_meta_description'][0..160] %></p>
-          <p><span class="font-bold text-navy">Parole chiave: </span> <small class="font-bold"><%= @report.keywords.split(', ').map(&:capitalize).join(' - ') %></small></p>
           <hr>
-          <div class="row">
-            <div class="col-lg-4">
-              <div class="ibox float-e-margins">
-                <div class="ibox-title">
-                  <span class="label label-warning pull-right"><i class="fa fa-warning"></i></span>
-                  <h5>Popolarità</h5>
-                </div>
-                <div class="ibox-content">
-                  <h1 class="no-margins">bassa</h1>
-                  <div class="stat-percent font-bold text-warning"> 0/10</div>
-                  <small>PageRank</small>
-                </div>
-              </div>
+          <p><span class="font-bold text-navy">Parole chiave: </span> <small class="font-bold"><%= @report.keywords.split(', ').map(&:capitalize).join(' - ') %></small></p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-4">
+          <div class="ibox float-e-margins">
+            <div class="ibox-title">
+              <span class="label label-warning pull-right"><i class="fa fa-warning"></i></span>
+              <h5>Popolarità</h5>
             </div>
-            <div class="col-lg-4">
-              <div class="ibox float-e-margins">
-                <div class="ibox-title">
-                  <span class="label label-warning pull-right"><i class="fa fa-warning"></i></span>
-                  <h5>Indice</h5>
-                </div>
-                <div class="ibox-content">
-                  <h1 class="no-margins"><%= @report.google_index %></h1>
-                  <div class="stat-percent font-bold text-success">23% <i class="fa fa-level-up"></i></div>
-                  <small>Pagine</small>
-                </div>
-              </div>
+            <div class="ibox-content">
+              <h1 class="no-margins">bassa</h1>
+              <div class="stat-percent font-bold text-warning"> 0/10</div>
+              <small>PageRank</small>
             </div>
-            <div class="col-lg-4">
-              <div class="ibox float-e-margins">
-                <div class="ibox-title">
-                  <span class="label label-warning pull-right"><i class="fa fa-warning"></i></span>
-                  <h5>Backlinks</h5>
-                </div>
-                <div class="ibox-content">
-                  <h1 class="no-margins"><%= @report.google_backlinks %></h1>
-                  <div class="stat-percent font-bold text-success">12% <i class="fa fa-level-up"></i></div>
-                  <small>Total views</small>
-                </div>
-              </div>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="ibox float-e-margins">
+            <div class="ibox-title">
+              <span class="label label-warning pull-right"><i class="fa fa-warning"></i></span>
+              <h5>Indice</h5>
+            </div>
+            <div class="ibox-content">
+              <h1 class="no-margins"><%= @report.google_index %></h1>
+              <div class="stat-percent font-bold text-success"><span class="bar">30,29,35,48,12,34</span></div>
+              <small>Pagine</small>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="ibox float-e-margins">
+            <div class="ibox-title">
+              <span class="label label-warning pull-right"><i class="fa fa-warning"></i></span>
+              <h5>Backlinks</h5>
+            </div>
+            <div class="ibox-content">
+              <h1 class="no-margins"><%= @report.google_backlinks %></h1>
+              <div class="stat-percent font-bold text-success"><span class="bar">1,1,4,7,3,12,8</span></div>
+              <small>Total views</small>
             </div>
           </div>
         </div>
       </div>
+      <!-- END ORGANIC SEARCH CHECKS -->
+      <div class="ibox float-e-margins">
+        <div class="ibox-title">
+          <h5>Compatibilità mobile</h5>
+          <div class="ibox-tools">
+            <a class="collapse-link">
+              <i class="fa fa-chevron-up"></i>
+            </a>
+            <a class="close-link">
+              <i class="fa fa-times"></i>
+            </a>
+          </div>
+        </div>
+        <div class="ibox-content">
+          <p>Nessuna analisi disponibile.</p>
+        </div>
+      </div>
     </div>
-    <!-- END ORGANIC SEARCH CHECKS -->
 
   </div>
   <div class="row">
@@ -392,22 +407,7 @@
 
     <!-- MOBILE CHECKS -->
     <div class="col-lg-6">
-      <div class="ibox float-e-margins">
-        <div class="ibox-title">
-          <h5>Compatibilità mobile</h5>
-          <div class="ibox-tools">
-            <a class="collapse-link">
-              <i class="fa fa-chevron-up"></i>
-            </a>
-            <a class="close-link">
-              <i class="fa fa-times"></i>
-            </a>
-          </div>
-        </div>
-        <div class="ibox-content">
-          <p>Nessuna analisi disponibile.</p>
-        </div>
-      </div>
+
     </div>
     <!-- END MOBILE CHECKS -->
 

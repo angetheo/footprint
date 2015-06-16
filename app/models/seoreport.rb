@@ -35,6 +35,7 @@ class Seoreport < ActiveRecord::Base
     end
     self.points += 1 if page_title.size <= 70
 
+
     # META DESCRIPTION LENGTH TEST
     meta_description = html_doc.at('meta[name="description"]').nil? ? "" : html_doc.at('meta[name="description"]')['content']
     self.meta_description = Hash.new.tap do |test_hash|
@@ -54,6 +55,7 @@ class Seoreport < ActiveRecord::Base
     end
     self.points += 1 if meta_description.size <= 160
 
+
     # RELEVANT KEYWORDS
     formatted_html_doc = html_doc.at('body').text.strip.gsub(/\s+/, " ")
     words = {}
@@ -64,6 +66,7 @@ class Seoreport < ActiveRecord::Base
     ['se','come','che','di','a','da','in','con','su','per','tra','fra','uno','una','un','dei','del','delle','della','degli','e','ed','è','i','o','la','le','il','gli','al','alla','agli','si','no','non','tuoi','tuo','nel','nella','negli','nelle',' ','=',':','-','//','+','"','""','{','}','"";','==','condividi','altra','altro','commenta','commenti','tutto','tutte','tutti'].each { |k| words.delete k }
     self.keywords = Hash[words.sort_by { |k,v| -v }[0..4]].keys.join(', ')
 
+
     # RELEVANT KEYWORDS IN TITLE AND DESCRIPTION CHECK
     keywords = self.keywords.split(', ')
     title_words = self.title['page_title'].gsub(/\W/,' ').split(' ').map(&:downcase)
@@ -72,67 +75,102 @@ class Seoreport < ActiveRecord::Base
     self.relevant_keywords    = Hash.new.tap do |test_hash|
       test_hash[:remaining_keywords] = remaining_words.join(' - ')
       test_hash[:title]       = 'Utilizzo delle parole chiave'
-      test_hash[:subtitle]    = remaining_words.size <= 2 ? "Utilizzi la maggior parte delle parole chiave nel titolo e nella descrizione" : "Non stai utilizzando le parole chiave nel titolo e nella descrizione"
+      test_hash[:subtitle]    = remaining_words.size <= 2 ? "Utilizzi la maggior parte delle parole chiave nel titolo e nella descrizione." : "Non stai utilizzando le parole chiave nel titolo e nella descrizione."
       test_hash[:description] = "Il titolo e la descrizione della tua pagina dovrebbero riflettere i contenuti del tuo sito. Utilizzando le parole chiave contenute nella tua pagina in titolo e descrizione, aiuti i motori di ricerca a categorizzare correttamente i contenuti e a mostrare il tuo sito nei risultati di ricerca di persone interessate."
-      test_hash[:priority] = 4
+      test_hash[:priority]    = 4
       test_hash[:pass] = remaining_words.size <= 2
     end
+    self.points += 3 if remaining_words.size <= 2
 
 
     #ROBOTS CHECK
     request = Typhoeus.get(@user.website_url+'/robots.txt')
-    if request.response_code != 404
-      self.robots = true
-      self.points += 2
-    else
-      self.robots = false
+    self.robots = Hash.new.tap do |test_hash|
+      test_hash[:title]       = 'File robots.txt'
+      test_hash[:subtitle]    = request.response_code != 404 ? "Ottimo, stai utilizzando il file robots.txt!" : "Sembra che tu non stia utilizzando il file robots.txt!"
+      test_hash[:description] = "Il file robots.txt è un file di testo che specifica le pagine che un motore di ricerca può o non può indicizzare. Inoltre può specificare la posizione della Sitemap. Se non inserito, i motori di ricerca potrebbero visitare pagine che non sono intese per il pubblico. Le performance nei rankings potrebbero risentirne."
+      test_hash[:priority]    = 3
+      test_hash[:pass]        = request.response_code != 404
     end
+    self.points += 2 if request.response_code != 404
+
 
     #SITEMAP XML CHECK
-    # Basically we have to check whether there is or not an xml (or xml.gz) file
-    # in the root directory of the website. The problem is that the only way I
-    # know is to send http requests to a specific URL and check the response.
-
     request1 = Typhoeus.get(@user.website_url+'/sitemap.xml')
     request2 = Typhoeus.get(@user.website_url+'/sitemap.xml.gz')
-    if request1.response_code != 404 && request2.response_code != 404
-      self.sitemap = true
-      self.points += 2
-    else
-      self.sitemap = false
+    self.sitemap = Hash.new.tap do |test_hash|
+      test_hash[:title]       = 'Sitemap XML'
+      test_hash[:subtitle]    = request1.response_code != 404 || request2.response_code != 404 ? "Stai utilizzando una Sitemap!" : "Non riusciamo a trovare una Sitemap. Inseriscila al più presto."
+      test_hash[:description] = "Il file sitemap.xml serve per indicare ai motori di ricerca come devono effettuare il crawling del tuo sito, mostrando la struttura della tua applicazione tramite i link che collegano le varie pagine. Inserisci una sitemap per facilitare la definizione della struttura da parte dei motori di ricerca."
+      test_hash[:priority]    = 3
+      test_hash[:pass]        = request1.response_code != 404 || request2.response_code != 404
     end
+    self.points += 2 if request1.response_code != 404 || request2.response_code != 404
+
 
     #IMG ALT TAG CHECK
-    img_tags = html_doc.css('img')
-    alt_tags = html_doc.css('img').map{ |i| i['alt']}
-    self.alt_tags = alt_tags.size/img_tags.size
-    if self.alt_tags >= 0.80
-      self.points += 1
+    img_tags = html_doc.css('img').size
+    alt_tags = html_doc.css('img').map{ |i| i['alt']}.size
+    alt_to_img_ratio = alt_tags/img_tags.to_f
+
+    self.alt_tags = Hash.new.tap do |test_hash|
+      test_hash[:percentage]  = (alt_to_img_ratio*100).to_i.to_s+"%"
+      test_hash[:title]       = 'Accessibilità immagini'
+      test_hash[:subtitle]    = "#{(alt_to_img_ratio*100).to_i.to_s+"%"} delle tue immagini possiede un alt tag."
+      test_hash[:description] = "L'attributo \"alt\" include il testo che viene visualizzato quando l'immagine non viene caricata per qualsiasi motivo (immagine non trovata oppure utilizzo di screen readers). Utilizza sempre l'attributo \"alt\" per aumentare l'accessibilità del tuo sito."
+      test_hash[:priority]    = 2
+      test_hash[:pass]        = alt_to_img_ratio >= 0.8
     end
+    self.points += 1 if alt_to_img_ratio >= 0.8
+
 
     #INLINE CSS STYLING
-    inline_style = html_doc.css "[style]"
-    self.inline_style = inline_style.size
-    if self.inline_style <= 5
-      self.points += 1
+    inline_styles = html_doc.css "[style]"
+    self.inline_styles = Hash.new.tap do |test_hash|
+      test_hash[:inline_styles]  = inline_styles.size
+      test_hash[:title]          = 'Stile inline'
+      test_hash[:subtitle]       = "Abbiamo trovato #{inline_styles.size} stili inline nella pagina."
+      test_hash[:description]    = "Gli stili inline sono sconsigliati in quanto rendono il codice meno riutilizzabile e comprensibile e l'applicazione meno modulare. Si consiglia di incapsulare le proprietà CSS all'interno di appositi selettori nel foglio di stile."
+      test_hash[:priority]       = 1
+      test_hash[:pass]           = inline_styles.size <= 5
     end
+    self.points += 1 if inline_styles.size <= 5
+
 
     #FAVICON CHECK
     default_favicon_request = Typhoeus.get(@user.website_url+'/favicon.ico')
     link_rel_icon_elements = html_doc.xpath('//link[contains(@rel,"icon")]')
     custom_favicon_url = link_rel_icon_elements.empty? ? nil : link_rel_icon_elements.first['href']
+    favicon_url = ""
     if custom_favicon_url != nil
       if Typhoeus.get(custom_favicon_url).response_code == 200
-        self.favicon_url = custom_favicon_url
-        self.points += 1
+        favicon_url = custom_favicon_url
       elsif Typhoeus.get(@user.website_url+custom_favicon_url).response_code == 200
-        self.favicon_url = 'http://'+@user.website_url+custom_favicon_url
-        self.points += 1
+        favicon_url = 'http://'+@user.website_url+custom_favicon_url
       end
     elsif default_favicon_request.response_code == 200
-      self.favicon_url = @user.website_url+'/favicon.ico'
-      self.points += 1
+      favicon_url = @user.website_url+'/favicon.ico'
     end
+    self.favicon_url = Hash.new.tap do |test_hash|
+      test_hash[:favicon_url] = favicon_url
+      test_hash[:title]       = "Favicon"
+      test_hash[:subtitle]    = favicon_url != "" ? "Ottimo! Utilizzi un'icona favicon." : "Non abbiamo trovato un'icona favicon."
+      test_hash[:description] = "La favicon è una piccola immagine (solitamente di dimensioni pari a 16x16 o 32x32) che viene utilizzata per mostrare il logo della società nelle schede del browser e tra i preferiti. Ti consigliamo di tenere sempre una favicon per aumentare la riconoscibilità del tuo business."
+      test_hash[:priority]    = 1
+      test_hash[:pass]        = favicon_url != ""
+    end
+    self.points += 1 if favicon_url != ""
+
+
+    # GOOGLE ANALYTICS CHECK
+    self.google_analytics = Hash.new.tap do |test_hash|
+      test_hash[:title]       = 'Google Analytics'
+      test_hash[:subtitle]    =  html_doc_with_script.xpath('//script[contains(text(), "GoogleAnalyticsObject")]') != nil ? "Sembra che tu stia utilizzando Google Analytics!" : "Non sembra che tu stia utilizzando Google Analytics"
+      test_hash[:description] = "Collegare la tua pagina web a Google Analytics ti consente di ottenere informazioni dettagliate sui visitatori della tua pagina, compresi dati demografici e geografici, tempo di permanenza su ciascuna pagina, pagine visualizzate, bounce rate e altro. Inserisci il tracker di Google Analytics nel tuo sito al più presto."
+      test_hash[:priority]    = 4
+      test_hash[:pass]        = html_doc_with_script.xpath('//script[contains(text(), "GoogleAnalyticsObject")]') != nil
+    end
+    self.points += 3 if html_doc_with_script.xpath('//script[contains(text(), "GoogleAnalyticsObject")]') != nil
 
     #DEPRECATED HTML TAGS CHECK
     deprecated_tags = ['applet','basefont','center','dir','embed','font','isindex','listing','menu','plaintext','s','strike','u','xmp']
@@ -141,17 +179,6 @@ class Seoreport < ActiveRecord::Base
       self.points += 1
     else
       self.deprecated_tags = deprecated_tags.join(' - ')
-    end
-
-
-    #BROKEN LINKS CHECK
-    # links_status = {}
-    # all_links = html_doc.css('a').map { |link| link['href'] }
-
-    #GOOGLE ANALYTICS CHECK
-    if html_doc_with_script.xpath('//script[contains(text(), "GoogleAnalyticsObject")]')
-      self.google_analytics = true
-      self.points += 3
     end
 
     #GOOGLE RANKING
