@@ -149,7 +149,34 @@ $(document).ready(function () {
     // Add slimscroll to element
     $('.full-height-scroll').slimscroll({
         height: '100%'
-    })
+    });
+
+    // AJAX REQUEST TO ASSESS PAGE SPEED
+    if (window.location.search.includes('seo')) {
+        $.ajax({
+            url: '/dashboard/speedtest'
+        }).done(function(serverData){
+            $('#ajax-pagespeed').html(serverData);
+            debugger
+            $('#seo-points').html($('#tot-points').html());
+            var g1 = new JustGage({
+              id: "gauge",
+              value: parseFloat($('#load-time').html()),
+              min: 0,
+              max: 50,
+              title: "Caricamento totale pagina",
+              label: "secondi",
+              gaugeWidthScale: 0.2,
+              levelColors: [
+                '#1ab394',
+                '#f8ac59',
+                '#ed5565'
+              ]
+            });
+        });
+    }
+
+
 });
 
 

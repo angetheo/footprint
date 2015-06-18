@@ -14,6 +14,8 @@ get '/dashboard' do
       else
         erb :'dashboard/seo', :layout => :'dashboard/layout'
       end
+    when 'ux'
+      erb :'dashboard/ux', :layout => :'dashboard/layout'
     else
       erb :'dashboard/index', :layout => :'dashboard/layout'
     end

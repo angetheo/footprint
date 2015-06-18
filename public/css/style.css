@@ -6419,6 +6419,19 @@ body.skin-3 {
   }
 }
 
+
+@media screen and (max-width: 480px) {
+  .no-mobile {
+    display:none;
+  }
+}
+
+@media screen and (min-width: 481px) {
+  .no-desktop {
+    display:none;
+  }
+}
+
 /* Custom */
 .img-icon {
   width:16px;

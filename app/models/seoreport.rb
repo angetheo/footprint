@@ -63,7 +63,7 @@ class Seoreport < ActiveRecord::Base
       word.downcase!
       words[word] ? words[word] += 1 : words[word] = 1
     end
-    ['se','come','che','di','a','da','in','con','su','per','tra','fra','uno','una','un','dei','del','delle','della','degli','e','ed','è','i','o','la','le','il','gli','al','alla','agli','si','no','non','tuoi','tuo','nel','nella','negli','nelle',' ','=',':','-','//','+','"','""','{','}','"";','==','condividi','altra','altro','commenta','commenti','tutto','tutte','tutti'].each { |k| words.delete k }
+    ['se','come','che','di','a','da','in','con','su','per','tra','fra','uno','una','un','dei','del','delle','della','degli','e','ed','è','i','o','la','le','il','gli','al','alla','agli','si','no','non','tuoi','tuo','nel','nella','negli','nelle',' ','=',':','-','//','+','"','""','{','}','"";','==','&','condividi','altra','altro','altre','altri','commenta','commenti','tutto','tutte','tutti'].each { |k| words.delete k }
     self.keywords = Hash[words.sort_by { |k,v| -v }[0..4]].keys.join(', ')
 
 
@@ -175,6 +175,17 @@ class Seoreport < ActiveRecord::Base
     #DEPRECATED HTML TAGS CHECK
     deprecated_tags = ['applet','basefont','center','dir','embed','font','isindex','listing','menu','plaintext','s','strike','u','xmp']
     used_tags = deprecated_tags.find_all { |deprecated_tag| html_doc.css(deprecated_tag).size > 0 }
+    self.deprecated_tags = Hash.new.tap do |test_hash|
+      test_hash[:used_tags]   = used_tags
+      test_hash[:title]      = "Specifiche HTML"
+      test_hash[:subtitle]    = used_tags.empty? ? "Il tuo sito è aggiornato con le ultime specifiche HTML!" : "Attenzione, stai utilizzando i seguenti elementi deprecati: #{used_tags.join(' - ')}"
+      test_hash[:description] = "Gli elementi HTML deprecati sono tag che sono stati dichiarati obsoleti e sono stati di conseguenza sostituiti da alternative migliori. Ti consigliamo di non utilizzare mai elementi deprecati, in quanto la loro funzionalità non è garantita in futuro."
+      test_hash[:priority]    = 1
+      test_hash[:pass]        = used_tags.empty?
+    end
+    self.points += 1 if used_tags.empty?
+
+
     if used_tags.empty?
       self.points += 1
     else
@@ -194,8 +205,50 @@ class Seoreport < ActiveRecord::Base
     self.points += 1 if self.google_backlinks > 50
 
     self.save!
+  end
 
-    p self
+  ###################
+  # SPEED TESTS     #
+  ###################
+
+  def speed_check current_user
+    start = Time.new
+    client = Google::APIClient.new
+    client.key = ENV['GOOGLE_API_KEY']
+    client.authorization = nil
+    pagespeedonline = client.discovered_api('pagespeedonline','v2')
+    result = client.execute(
+        api_method: pagespeedonline.pagespeedapi.runpagespeed,
+        parameters: {url: 'http://'+current_user.website_url}
+    )
+    stop = Time.new
+    response_data = result.data
+    response_time = stop-start
+
+    self.load_time = response_time
+    self.total_page_size = (
+      response_data.pageStats.htmlResponseBytes +
+      response_data.pageStats.cssResponseBytes +
+      response_data.pageStats.imageResponseBytes +
+      response_data.pageStats.javascriptResponseBytes +
+      response_data.pageStats.otherResponseBytes
+    )/1024
+    if response_data.formattedResults.ruleResults.MinifyCss.ruleImpact == 0 && response_data.formattedResults.ruleResults.MinifyJavaScript.ruleImpact == 0 && response_data.formattedResults.ruleResults.MinifyHTML.ruleImpact == 0
+      p 'yeah'
+      self.asset_minification = "<i class='fa fa-check text-navy'></i> Ok!"
+      self.points += 5
+    else
+      p 'nope'
+      self.asset_minification = "<i class='fa fa-warning text-warning'></i> Parziale"
+    end
+    if response_data.formattedResults.ruleResults.EnableGzipCompression.ruleImpact == 0
+      self.asset_compression = "<i class='fa fa-check text-navy'></i> GZip"
+      self.points += 5
+    else
+      self.asset_compression = "<i class='fa fa-times text-danger'></i> Nessuna"
+    end
+
+    self.save!
   end
 
 end

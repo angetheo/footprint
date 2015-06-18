@@ -1,0 +1,26 @@
+<div class="hidden" id="load-time"><%= @report.load_time %></div>
+<div class="hidden" id="tot-points"><%= @report.points %></div>
+
+<div class="row">
+  <div class="col-sm-6 text-center">
+    <div id="gauge" class="190x200px"></div>
+    <hr class="no-desktop">
+  </div>
+  <div class="col-sm-6">
+    <div class="col-xs-12">
+        <small class="stats-label">Dimensione totale della pagina</small>
+        <h2> <%= @report.total_page_size > 1600 ? "<i class='fa fa-warning text-warning'></i> " + @report.total_page_size.to_s : "<i class='fa fa-check text-navy'></i> " + @report.total_page_size.to_s %> KB</h2>
+    </div>
+
+    <div class="col-xs-12">
+        <small class="stats-label">Minificazione degli asset</small>
+        <h2><%= @report.asset_minification %></h2>
+    </div>
+    <div class="col-xs-12">
+        <small class="stats-label">Compressione degli asset</small>
+        <h2><%= @report.asset_compression %></h2>
+    </div>
+  </div>
+</div>
+
+<hr>

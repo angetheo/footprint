@@ -21,10 +21,13 @@ require 'open-uri'
 require 'nokogiri'
 require 'typhoeus'
 require 'PageRankr'
+require 'google/api_client'
 
 require 'bcrypt'
+require 'dotenv'
 
 Hirb.enable
+Dotenv.load
 
 # Some helper constants for path-centric logic
 APP_ROOT = Pathname.new(File.expand_path('../../', __FILE__))

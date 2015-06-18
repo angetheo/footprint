@@ -19,19 +19,19 @@ put '/:user_id/website' do
   user.website_url = params[:website_url]
   user.save!
 
-  # TODO
-  # WHEN A USER STARTS THE ANALYSIS, WE SHOULD CREATE A NEW SEOREPORT
-  # THE INITIALIZE CLASS SHOULD CALL ALL THE METHODS (STRUCTURE, SPEED ...)
-
-  # CREATE A NEW REPORT IF IT DOESN'T EXIST
-  seo_report = Seoreport.find_by(id: params[:user_id])
-  if seo_report.nil?
-    seo_report = Seoreport.create({user_id: params[:user_id]})
-  end
-
+  # 3) CREATE A NEW REPORT IF IT DOESN'T EXIST
+  seo_report = Seoreport.find_or_create_by(user_id: params[:user_id])
   seo_report.generate(params[:website_url])
 
   redirect '/dashboard?tab=seo'
+end
+
+get '/dashboard/speedtest' do
+  if request.xhr?
+    @report = Seoreport.find_by(user_id: current_user.id)
+    @report.speed_check(current_user) if @report.load_time.nil?
+    erb :'dashboard/_speed_test', layout: false
+  end
 end
 
 get '/demoseo' do
