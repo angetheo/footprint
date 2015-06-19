@@ -185,13 +185,6 @@ class Seoreport < ActiveRecord::Base
     end
     self.points += 1 if used_tags.empty?
 
-
-    if used_tags.empty?
-      self.points += 1
-    else
-      self.deprecated_tags = deprecated_tags.join(' - ')
-    end
-
     #GOOGLE RANKING
     self.google_rank = PageRankr.rank(@user.website_url, :google)[:google].nil? ? 0 : PageRankr.rank(@user.website_url, :google)[:google]
     self.points += self.google_rank/3
@@ -212,6 +205,8 @@ class Seoreport < ActiveRecord::Base
   ###################
 
   def speed_check current_user
+
+    # PAGESPEED CALL
     start = Time.new
     client = Google::APIClient.new
     client.key = ENV['GOOGLE_API_KEY']
@@ -225,28 +220,70 @@ class Seoreport < ActiveRecord::Base
     response_data = result.data
     response_time = stop-start
 
+    # LOAD TIME (DOES NOT COUNT AS A TEST)
     self.load_time = response_time
-    self.total_page_size = (
-      response_data.pageStats.htmlResponseBytes +
-      response_data.pageStats.cssResponseBytes +
-      response_data.pageStats.imageResponseBytes +
-      response_data.pageStats.javascriptResponseBytes +
-      response_data.pageStats.otherResponseBytes
-    )/1024
-    if response_data.formattedResults.ruleResults.MinifyCss.ruleImpact == 0 && response_data.formattedResults.ruleResults.MinifyJavaScript.ruleImpact == 0 && response_data.formattedResults.ruleResults.MinifyHTML.ruleImpact == 0
-      p 'yeah'
-      self.asset_minification = "<i class='fa fa-check text-navy'></i> Ok!"
-      self.points += 5
-    else
-      p 'nope'
-      self.asset_minification = "<i class='fa fa-warning text-warning'></i> Parziale"
+
+    # PAGE SIZE TEST
+    total_page_size = (response_data.pageStats.htmlResponseBytes + response_data.pageStats.cssResponseBytes + response_data.pageStats.imageResponseBytes + response_data.pageStats.javascriptResponseBytes + response_data.pageStats.otherResponseBytes)/1024
+    self.total_page_size = Hash.new.tap do |h|
+      h[:total_page_size] = total_page_size
+      h[:title]           = 'Dimensione totale della pagina'
+      h[:subtitle]        = total_page_size <= 1600 ? 'La dimensione totale della pagina è ottimale' : 'La dimensione totale della pagina supera i 1600 KB.'
+      h[:description]     = 'La velocità di caricamento degli asset è fondamentale per migliorare l\'esperienza utente e il tuo posizionamento sui motori di ricerca. Cerca di ridurre la dimensione totale della pagina il più possibile in modo da ridurre i tempo di caricamento.'
+      h[:priority]        = 2
+      h[:pass]            = total_page_size <= 1600 ? 'true' : 'warning'
     end
-    if response_data.formattedResults.ruleResults.EnableGzipCompression.ruleImpact == 0
-      self.asset_compression = "<i class='fa fa-check text-navy'></i> GZip"
-      self.points += 5
-    else
-      self.asset_compression = "<i class='fa fa-times text-danger'></i> Nessuna"
+    self.points += 5 if total_page_size <= 1600
+
+
+    # HTTP CALLS TEST
+    self.assets = Hash.new.tap do |h|
+      h[:total] = response_data.pageStats.numberStaticResources
+      h[:css]   = response_data.pageStats.numberCssResources
+      h[:js]    = response_data.pageStats.numberJsResources
+      h[:img]   = response_data.pageStats.numberStaticResources - response_data.pageStats.numberCssResources - response_data.pageStats.numberJsResources - 1 # HTML DOC
+      h[:title] = 'Numero di risorse statiche'
+      h[:subtitle] = response_data.pageStats.numberStaticResources.to_i <= 90 ? 'Il numero di richieste è ridotto e in linea con gli standard.' : 'Il numero di risorse statiche è molto elevato e potrebbe rallentare il caricamento della pagina.'
+      h[:description] = 'Le risorse statiche sono, tra le altre, fogli di stile, file JavaScript e immagini che vengono caricati dal browser per mostrare i contenuti delle pagine. Alcune di queste risorse possono influire significativamente sulla dimensione totale, ed è sempre meglio ridurre al minimo il numero di risorse da chiedere al server per massimizzare la velocità di caricamento.'
+      h[:priority]    = 3
+      h[:pass]  = response_data.pageStats.numberStaticResources.to_i <= 90 ? 'true' : 'warning'
     end
+    self.points += 5 if response_data.pageStats.numberStaticResources.to_i <= 90
+
+
+    # ASSET MINIFICATION TEST
+    minification_check = response_data.formattedResults.ruleResults.MinifyCss.ruleImpact + response_data.formattedResults.ruleResults.MinifyJavaScript.ruleImpact + response_data.formattedResults.ruleResults.MinifyHTML.ruleImpact
+    self.asset_minification = Hash.new.tap do |h|
+      h[:title]       = 'Minificazione degli asset'
+      h[:subtitle]    = minification_check == 0 ? 'Tutti i tuoi asset sono correttamente minificati!' : 'Alcuni asset sono da minificare.'
+      h[:description] = 'La minificazione degli asset è un processo di riduzione delle dimensioni dei file CSS e JS tramite eliminazione degli spazi superflui e in generale, tramite riduzione del numero di caratteri presenti nel documento. La minificazione ti permette di risparmiare KB preziosi durante il caricamento.'
+      h[:priority]    = 4
+      h[:pass]        = minification_check == 0
+    end
+    self.points += 5 if minification_check == 0
+
+
+    # ASSET COMPRESSION TEST
+    compression_check = response_data.formattedResults.ruleResults.EnableGzipCompression.ruleImpact
+    self.asset_compression = Hash.new.tap do |h|
+      h[:title]       = 'Compressione degli asset'
+      h[:subtitle]    = compression_check == 0 ? 'Tutti i tuoi asset sono correttamente compressi!' : 'La compressione dei file è assente.'
+      h[:description] = 'In media, la compressione dei file permette di risparmiare fino all\'80% dei KB in fase di caricamento. La compressione viene solitamente effettuata tramite GZip o altri strumenti.'
+      h[:priority]    = 5
+      h[:pass]        = compression_check == 0
+    end
+    self.points += 5 if compression_check == 0
+
+    # ASSET CACHING TEST
+    caching_check = response_data.formattedResults.ruleResults.LeverageBrowserCaching.ruleImpact
+    self.caching = Hash.new.tap do |h|
+      h[:title]       = 'Caching degli asset'
+      h[:subtitle]    = caching_check == 0 ? 'Caching abilitato.' : 'Caching non abilitato.'
+      h[:description] = 'Il caching lato browser permette di "salvare" temporaneamente i file che compongono un documento web sul computer dell\'utente che visita il sito. Abilitare il caching riduce drasticamente i tempi di caricamento delle risorse quando l\'utente ritorna sul tuo sito web.'
+      h[:priority]    = 5
+      h[:pass]        = caching_check == 0
+    end
+    self.points += 5 if caching_check == 0
 
     self.save!
   end

@@ -2,25 +2,141 @@
 <div class="hidden" id="tot-points"><%= @report.points %></div>
 
 <div class="row">
-  <div class="col-sm-6 text-center">
-    <div id="gauge" class="190x200px"></div>
-    <hr class="no-desktop">
+  <div class="col-lg-6 text-center">
+    <div id="gauge" class="400x300px"></div>
   </div>
-  <div class="col-sm-6">
-    <div class="col-xs-12">
-        <small class="stats-label">Dimensione totale della pagina</small>
-        <h2> <%= @report.total_page_size > 1600 ? "<i class='fa fa-warning text-warning'></i> " + @report.total_page_size.to_s : "<i class='fa fa-check text-navy'></i> " + @report.total_page_size.to_s %> KB</h2>
-    </div>
-
-    <div class="col-xs-12">
-        <small class="stats-label">Minificazione degli asset</small>
-        <h2><%= @report.asset_minification %></h2>
-    </div>
-    <div class="col-xs-12">
-        <small class="stats-label">Compressione degli asset</small>
-        <h2><%= @report.asset_compression %></h2>
-    </div>
+  <div class="col-lg-6">
+    <ul class="list-group clear-list m-t">
+      <li class="list-group-item fist-item">
+        <span class="label label-success pull-right">1</span>
+         <i class="fa fa-file-o"></i> &nbsp; Documenti HTML
+      </li>
+      <li class="list-group-item">
+        <span class="label label-info pull-right"><%= @report.assets['css'] %></span>
+         <i class="fa fa-file-text-o"></i> &nbsp; Fogli di stile CSS
+      </li>
+      <li class="list-group-item">
+        <span class="label label-primary pull-right"><%= @report.assets['js'] %></span>
+         <i class="fa fa-file-code-o"></i> &nbsp; File JavaScript
+      </li>
+      <li class="list-group-item">
+        <span class="label label-default pull-right"><%= @report.assets['img'] %></span>
+         <i class="fa fa-file-image-o"></i> &nbsp; Immagini
+      </li>
+    </ul>
   </div>
 </div>
-
 <hr>
+<div class="row">
+
+  <div class="faq-item">
+    <div class="row">
+      <div class="col-md-10">
+        <a data-toggle="collapse" href="#faq11" class="faq-question"><%= @report.total_page_size['title'] %> <i class="fa fa-caret-down"></i></a>
+        <small><%= @report.total_page_size['subtitle'] %></small><br>
+        <small><%= priority(@report.total_page_size['priority']) %></small>
+      </div>
+      <div class="col-md-2 text-right">
+        <span class="font-bold <%= formatter(@report.total_page_size['pass'])[0] %>"> <%= @report.total_page_size['total_page_size'] %> Kb <i class="fa <%= formatter(@report.total_page_size['pass'])[1] %>"></i></span>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-12">
+        <div id="faq11" class="panel-collapse collapse ">
+          <div class="faq-answer">
+            <p><%= @report.total_page_size['description'] %></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="row">
+      <div class="col-md-10">
+        <a data-toggle="collapse" href="#faq12" class="faq-question"><%= @report.assets['title'] %> <i class="fa fa-caret-down"></i></a>
+        <small><%= @report.assets['subtitle'] %></small><br>
+        <small><%= priority(@report.assets['priority']) %></small>
+      </div>
+      <div class="col-md-2 text-right">
+        <span class="font-bold <%= formatter(@report.assets['pass'])[0] %>"> <%= @report.assets['total'] %> <i class="fa <%= formatter(@report.assets['pass'])[1] %>"></i></span>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-12">
+        <div id="faq12" class="panel-collapse collapse ">
+          <div class="faq-answer">
+            <p><%= @report.assets['description'] %></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="row">
+      <div class="col-md-10">
+        <a data-toggle="collapse" href="#faq13" class="faq-question"><%= @report.asset_minification['title'] %> <i class="fa fa-caret-down"></i></a>
+        <small><%= @report.asset_minification['subtitle'] %></small><br>
+        <small><%= priority(@report.asset_minification['priority']) %></small>
+      </div>
+      <div class="col-md-2 text-right">
+        <span class="font-bold <%= formatter(@report.asset_minification['pass'])[0] %>"> <i class="fa <%= formatter(@report.asset_minification['pass'])[1] %>"></i></span>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-12">
+        <div id="faq13" class="panel-collapse collapse ">
+          <div class="faq-answer">
+            <p><%= @report.asset_minification['description'] %></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="row">
+      <div class="col-md-10">
+        <a data-toggle="collapse" href="#faq14" class="faq-question"><%= @report.asset_compression['title'] %> <i class="fa fa-caret-down"></i></a>
+        <small><%= @report.asset_compression['subtitle'] %></small><br>
+        <small><%= priority(@report.asset_compression['priority']) %></small>
+      </div>
+      <div class="col-md-2 text-right">
+        <span class="font-bold <%= formatter(@report.asset_compression['pass'])[0] %>"> <i class="fa <%= formatter(@report.asset_compression['pass'])[1] %>"></i></span>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-12">
+        <div id="faq14" class="panel-collapse collapse ">
+          <div class="faq-answer">
+            <p><%= @report.asset_compression['description'] %></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="row">
+      <div class="col-md-10">
+        <a data-toggle="collapse" href="#faq15" class="faq-question"><%= @report.caching['title'] %> <i class="fa fa-caret-down"></i></a>
+        <small><%= @report.caching['subtitle'] %></small><br>
+        <small><%= priority(@report.caching['priority']) %></small>
+      </div>
+      <div class="col-md-2 text-right">
+        <span class="font-bold <%= formatter(@report.caching['pass'])[0] %>"> <i class="fa <%= formatter(@report.caching['pass'])[1] %>"></i></span>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-12">
+        <div id="faq15" class="panel-collapse collapse ">
+          <div class="faq-answer">
+            <p><%= @report.caching['description'] %></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

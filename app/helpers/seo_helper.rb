@@ -6,7 +6,16 @@ helpers do
   end
 
   def formatter test
-    test == "true" ? ['text-navy','fa-check'] : ['text-danger','fa-times']
+    case test
+    when "true"
+      ['text-navy','fa-check']
+    when "warning"
+      ['text-warning', 'fa-warning']
+    when "false"
+      ['text-danger','fa-times']
+    else
+      ['text-primary','fa-circle-o']
+    end
   end
 
   def tests report
@@ -14,6 +23,7 @@ helpers do
     tests = Hash.new.tap do |h|
       h[:pass]  = all_tests.count { |el| el == 'true' }
       h[:fail]  = all_tests.count { |el| el == 'false' }
+      h[:warning] = all_tests.count { |el| el == 'warning' }
       h[:total] = all_tests.count { |el| el != nil }
     end
   end

@@ -29,7 +29,7 @@ end
 get '/dashboard/speedtest' do
   if request.xhr?
     @report = Seoreport.find_by(user_id: current_user.id)
-    @report.speed_check(current_user) if @report.load_time.nil?
+    @report.speed_check(current_user) if @report.load_time.nil? && @report.total_page_size.empty?
     erb :'dashboard/_speed_test', layout: false
   end
 end

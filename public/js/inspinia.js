@@ -157,7 +157,6 @@ $(document).ready(function () {
             url: '/dashboard/speedtest'
         }).done(function(serverData){
             $('#ajax-pagespeed').html(serverData);
-            debugger
             $('#seo-points').html($('#tot-points').html());
             var g1 = new JustGage({
               id: "gauge",
@@ -173,6 +172,8 @@ $(document).ready(function () {
                 '#ed5565'
               ]
             });
+        }).fail(function(serverData){
+            $('#ajax-pagespeed').html('Qualcosa è andato storto. Ricarica per riprovare.');
         });
     }
 

@@ -18,9 +18,11 @@ class CreateSeoreports < ActiveRecord::Migration
       t.integer :google_backlinks
       # SPEED
       t.decimal :load_time, precision: 4, scale: 1
-      t.integer :total_page_size
-      t.string :asset_minification
-      t.string :asset_compression
+      t.hstore :total_page_size, null: false, default: {}
+      t.hstore :asset_minification, null: false, default: {}
+      t.hstore :asset_compression, null: false, default: {}
+      t.hstore :assets, null: false, default: {}
+      t.hstore :caching, null: false, default: {}
 
       t.references :user
       t.integer :points, default: 0

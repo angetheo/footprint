@@ -4,7 +4,7 @@
 <div class="row border-bottom white-bg dashboard-header">
   <div class="col-lg-4">
     <h2><i class="fa fa-desktop"></i> &nbsp;<%= current_user.website_url.gsub('www.','') %></h2>
-    <small><i class="fa fa-times"></i> Non verificato. Verifica ora il tuo business.</small>
+    <small><i class="fa fa-times"></i> Non verificato. <span class="text-navy">Verifica ora il tuo business.</span></small>
     <hr>
     <a href="/demoseo" class="btn btn-primary btn-xs">Cancella sito e ripeti analisi</a> &nbsp;
   </div>
@@ -19,9 +19,9 @@
       </li>
       <li>
         <small><i class="fa fa-warning"></i> Aspetti da migliorare</small>
-        <span class="label label-warning pull-right">0</span>
+        <span class="label label-warning pull-right"><%= tests[:warning] %></span>
         <div class="progress progress-mini">
-          <div style="width: 0%;" class="progress-bar progress-bar-warning"></div>
+          <div style="width: <%= (tests[:warning].to_i/tests[:total].to_f*100).to_i.to_s+"%" %>;" class="progress-bar progress-bar-warning"></div>
         </div>
       </li>
       <li>
@@ -36,7 +36,7 @@
   <div class="col-lg-offset-1 col-lg-3">
     <div class="widget navy-bg no-padding">
       <div class="p-m">
-        <h1 class="m-xs" id="seo-points"><%= @report.points %></h1>
+        <h1 class="m-xs" id="seo-points"><i class="fa fa-refresh fa-spin"></i></h1>
 
         <h3 class="font-bold no-margins">
             Punteggio Footprint SEO
@@ -366,7 +366,7 @@
       <!-- END ORGANIC SEARCH CHECKS -->
       <div class="ibox float-e-margins">
         <div class="ibox-title">
-          <h5>Velocità e performance</h5>
+          <h5>Report velocità e performance</h5>
           <div class="ibox-tools">
             <a class="collapse-link">
               <i class="fa fa-chevron-up"></i>
