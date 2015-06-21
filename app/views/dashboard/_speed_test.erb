@@ -31,13 +31,13 @@
 
   <div class="faq-item">
     <div class="row">
-      <div class="col-md-10">
+      <div class="col-md-9">
         <a data-toggle="collapse" href="#faq11" class="faq-question"><%= @report.total_page_size['title'] %> <i class="fa fa-caret-down"></i></a>
         <small><%= @report.total_page_size['subtitle'] %></small><br>
         <small><%= priority(@report.total_page_size['priority']) %></small>
       </div>
-      <div class="col-md-2 text-right">
-        <span class="font-bold <%= formatter(@report.total_page_size['pass'])[0] %>"> <%= @report.total_page_size['total_page_size'] %> Kb <i class="fa <%= formatter(@report.total_page_size['pass'])[1] %>"></i></span>
+      <div class="col-md-3 text-right">
+        <span class="font-bold <%= formatter(@report.total_page_size['pass'])[0] %>"> <%= @report.total_page_size['total_page_size'][0..3] %> MB <i class="fa <%= formatter(@report.total_page_size['pass'])[1] %>"></i></span>
       </div>
     </div>
     <div class="row">

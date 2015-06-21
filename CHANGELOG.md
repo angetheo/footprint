@@ -12,3 +12,11 @@
 * Correct misusue of e.g.
 * Convert helpers/README to Markdown
 * Implement a "em" helper for reference; improve README
+
+### v.0.1.2
+* Procedure to reset db on Heroku:
+- heroku pg:reset DATABASE_URL
+- heroku pg:psql
+    CREATE EXTENSION hstore;
+- heroku run rake db:migrate
+- heroku run rake db:seed

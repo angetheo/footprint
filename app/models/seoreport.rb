@@ -28,7 +28,7 @@ class Seoreport < ActiveRecord::Base
       test_hash[:page_title]  = page_title
       test_hash[:length]      = page_title.size
       test_hash[:title]       = 'Titolo della pagina'
-      test_hash[:subtitle]    = title.size <= 70 ? 'La lunghezza del titolo è in linea con i requisiti di molti motori di ricerca.' : 'Il titolo è troppo lungo e potrebbe essere troncato nei risultati di ricerca.'
+      test_hash[:subtitle]    = page_title.size <= 70 ? 'La lunghezza del titolo è in linea con i requisiti di molti motori di ricerca.' : 'Il titolo è troppo lungo e potrebbe essere troncato nei risultati di ricerca.'
       test_hash[:description] = 'Molti motori di ricerca troncano la lunghezza del titolo a 70 caratteri o meno. Riducendo la lunghezza del titolo permetti agli utenti di vedere il titolo intero e di comprendere il contenuto del sito in base ai risultati organici di ricerca.'
       test_hash[:priority]    = 2
       test_hash[:pass]        = page_title.size <= 70
@@ -224,16 +224,16 @@ class Seoreport < ActiveRecord::Base
     self.load_time = response_time
 
     # PAGE SIZE TEST
-    total_page_size = (response_data.pageStats.htmlResponseBytes + response_data.pageStats.cssResponseBytes + response_data.pageStats.imageResponseBytes + response_data.pageStats.javascriptResponseBytes + response_data.pageStats.otherResponseBytes)/1024
+    total_page_size = (response_data.pageStats.htmlResponseBytes + response_data.pageStats.cssResponseBytes + response_data.pageStats.imageResponseBytes + response_data.pageStats.javascriptResponseBytes + response_data.pageStats.otherResponseBytes)/1024.0/1024.0
     self.total_page_size = Hash.new.tap do |h|
       h[:total_page_size] = total_page_size
       h[:title]           = 'Dimensione totale della pagina'
-      h[:subtitle]        = total_page_size <= 1600 ? 'La dimensione totale della pagina è ottimale' : 'La dimensione totale della pagina supera i 1600 KB.'
+      h[:subtitle]        = total_page_size <= 1.6 ? 'La dimensione totale della pagina è ottimale' : 'La dimensione totale della pagina supera i 1.6 MB.'
       h[:description]     = 'La velocità di caricamento degli asset è fondamentale per migliorare l\'esperienza utente e il tuo posizionamento sui motori di ricerca. Cerca di ridurre la dimensione totale della pagina il più possibile in modo da ridurre i tempo di caricamento.'
       h[:priority]        = 2
-      h[:pass]            = total_page_size <= 1600 ? 'true' : 'warning'
+      h[:pass]            = total_page_size <= 1.6 ? 'true' : 'warning'
     end
-    self.points += 5 if total_page_size <= 1600
+    self.points += 5 if total_page_size <= 1.6
 
 
     # HTTP CALLS TEST
