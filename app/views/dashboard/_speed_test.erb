@@ -33,12 +33,11 @@
   </div>
 </div>
 <hr>
-<div class="row">
 
   <div class="faq-item">
     <div class="row">
       <div class="col-md-9">
-        <a data-toggle="collapse" href="#faq11" class="faq-question"><%= @report.total_page_size['title'] %> <i class="fa fa-caret-down"></i></a>
+        <a data-toggle="collapse" href="#spe0" class="faq-question"><%= @report.total_page_size['title'] %> <i class="fa fa-caret-down"></i></a>
         <small><%= @report.total_page_size['subtitle'] %></small><br>
         <small><%= priority(@report.total_page_size['priority']) %></small>
       </div>
@@ -48,7 +47,7 @@
     </div>
     <div class="row">
       <div class="col-lg-12">
-        <div id="faq11" class="panel-collapse collapse ">
+        <div id="spe0" class="panel-collapse collapse ">
           <div class="faq-answer">
             <p><%= @report.total_page_size['description'] %></p>
           </div>
@@ -60,7 +59,7 @@
   <div class="faq-item">
     <div class="row">
       <div class="col-md-10">
-        <a data-toggle="collapse" href="#faq12" class="faq-question"><%= @report.assets['title'] %> <i class="fa fa-caret-down"></i></a>
+        <a data-toggle="collapse" href="#spe1" class="faq-question"><%= @report.assets['title'] %> <i class="fa fa-caret-down"></i></a>
         <small><%= @report.assets['subtitle'] %></small><br>
         <small><%= priority(@report.assets['priority']) %></small>
       </div>
@@ -70,7 +69,7 @@
     </div>
     <div class="row">
       <div class="col-lg-12">
-        <div id="faq12" class="panel-collapse collapse ">
+        <div id="spe1" class="panel-collapse collapse ">
           <div class="faq-answer">
             <p><%= @report.assets['description'] %></p>
           </div>
@@ -82,7 +81,7 @@
   <div class="faq-item">
     <div class="row">
       <div class="col-md-10">
-        <a data-toggle="collapse" href="#faq13" class="faq-question"><%= @report.asset_minification['title'] %> <i class="fa fa-caret-down"></i></a>
+        <a data-toggle="collapse" href="#spe2" class="faq-question"><%= @report.asset_minification['title'] %> <i class="fa fa-caret-down"></i></a>
         <small><%= @report.asset_minification['subtitle'] %></small><br>
         <small><%= priority(@report.asset_minification['priority']) %></small>
       </div>
@@ -92,7 +91,7 @@
     </div>
     <div class="row">
       <div class="col-lg-12">
-        <div id="faq13" class="panel-collapse collapse ">
+        <div id="spe2" class="panel-collapse collapse ">
           <div class="faq-answer">
             <p><%= @report.asset_minification['description'] %></p>
           </div>
@@ -104,7 +103,7 @@
   <div class="faq-item">
     <div class="row">
       <div class="col-md-10">
-        <a data-toggle="collapse" href="#faq14" class="faq-question"><%= @report.asset_compression['title'] %> <i class="fa fa-caret-down"></i></a>
+        <a data-toggle="collapse" href="#spe3" class="faq-question"><%= @report.asset_compression['title'] %> <i class="fa fa-caret-down"></i></a>
         <small><%= @report.asset_compression['subtitle'] %></small><br>
         <small><%= priority(@report.asset_compression['priority']) %></small>
       </div>
@@ -114,7 +113,7 @@
     </div>
     <div class="row">
       <div class="col-lg-12">
-        <div id="faq14" class="panel-collapse collapse ">
+        <div id="spe3" class="panel-collapse collapse ">
           <div class="faq-answer">
             <p><%= @report.asset_compression['description'] %></p>
           </div>
@@ -126,7 +125,7 @@
   <div class="faq-item">
     <div class="row">
       <div class="col-md-10">
-        <a data-toggle="collapse" href="#faq15" class="faq-question"><%= @report.caching['title'] %> <i class="fa fa-caret-down"></i></a>
+        <a data-toggle="collapse" href="#spe4" class="faq-question"><%= @report.caching['title'] %> <i class="fa fa-caret-down"></i></a>
         <small><%= @report.caching['subtitle'] %></small><br>
         <small><%= priority(@report.caching['priority']) %></small>
       </div>
@@ -136,7 +135,7 @@
     </div>
     <div class="row">
       <div class="col-lg-12">
-        <div id="faq15" class="panel-collapse collapse ">
+        <div id="spe4" class="panel-collapse collapse ">
           <div class="faq-answer">
             <p><%= @report.caching['description'] %></p>
           </div>
@@ -144,5 +143,3 @@
       </div>
     </div>
   </div>
-
-</div>

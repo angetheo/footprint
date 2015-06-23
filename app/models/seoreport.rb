@@ -14,6 +14,7 @@ class Seoreport < ActiveRecord::Base
     html_doc.xpath("//script").remove
 
     structure_check(html_doc, html_doc_with_script)
+    safety_check(@user)
   end
 
   ###################
@@ -173,6 +174,7 @@ class Seoreport < ActiveRecord::Base
     end
     self.points += 3 if html_doc_with_script.xpath('//script[contains(text(), "GoogleAnalyticsObject")]') != nil
 
+
     #DEPRECATED HTML TAGS CHECK
     deprecated_tags = ['applet','basefont','center','dir','embed','font','isindex','listing','menu','plaintext','s','strike','u','xmp']
     used_tags = deprecated_tags.find_all { |deprecated_tag| html_doc.css(deprecated_tag).size > 0 }
@@ -186,13 +188,16 @@ class Seoreport < ActiveRecord::Base
     end
     self.points += 1 if used_tags.empty?
 
+
     #GOOGLE RANKING
     self.google_rank = PageRankr.rank(@user.website_url, :google)[:google].nil? ? 0 : PageRankr.rank(@user.website_url, :google)[:google]
     self.points += self.google_rank/3
 
+
     #GOOGLE INDEXING
     self.google_index = PageRankr.index(@user.website_url, :google)[:google].nil? ? 0 : PageRankr.index(@user.website_url, :google)[:google]
     self.points += 1 if self.google_index > 5
+
 
     #GOOGLE BACKLINKS
     self.google_backlinks = PageRankr.backlinks(@user.website_url, :google)[:google].nil? ? 0 : PageRankr.backlinks(@user.website_url, :google)[:google]
@@ -201,9 +206,9 @@ class Seoreport < ActiveRecord::Base
     self.save!
   end
 
-  ###################
-  # SPEED TESTS     #
-  ###################
+  ######################
+  # SPEED TESTS (AJAX) #
+  ######################
 
   def speed_check current_user
 
@@ -227,7 +232,7 @@ class Seoreport < ActiveRecord::Base
 
 
     # PAGE SIZE TEST
-    total_page_size = (response_data.pageStats['htmlResponseBytes'].to_i + response_data.pageStats['cssResponseBytes'].to_i + response_data.pageStats['imageResponseBytes'] + response_data.pageStats['javascriptResponseBytes'] + response_data.pageStats['otherResponseBytes'])/1024.0/1024.0
+    total_page_size = (response_data.pageStats['htmlResponseBytes'].to_i + response_data.pageStats['cssResponseBytes'].to_i + response_data.pageStats['imageResponseBytes'].to_i + response_data.pageStats['javascriptResponseBytes'].to_i + response_data.pageStats['otherResponseBytes'].to_i)/1024.0/1024.0
     self.total_page_size = Hash.new.tap do |h|
       h[:total_page_size] = total_page_size
       h[:title]           = 'Dimensione totale della pagina'
@@ -270,12 +275,13 @@ class Seoreport < ActiveRecord::Base
     compression_check = response_data.formattedResults.ruleResults.EnableGzipCompression.ruleImpact
     self.asset_compression = Hash.new.tap do |h|
       h[:title]       = 'Compressione degli asset'
-      h[:subtitle]    = compression_check == 0 ? 'Tutti i tuoi asset sono correttamente compressi!' : 'La compressione dei file è assente.'
+      h[:subtitle]    = compression_check == 0 ? 'Tutti i tuoi asset sono correttamente compressi!' : 'La compressione dei file è assente o parziale.'
       h[:description] = 'In media, la compressione dei file permette di risparmiare fino all\'80% dei KB in fase di caricamento. La compressione viene solitamente effettuata tramite GZip o altri strumenti.'
       h[:priority]    = 5
       h[:pass]        = compression_check == 0
     end
     self.points += 5 if compression_check == 0
+
 
     # ASSET CACHING TEST
     caching_check = response_data.formattedResults.ruleResults.LeverageBrowserCaching.ruleImpact
@@ -287,6 +293,40 @@ class Seoreport < ActiveRecord::Base
       h[:pass]        = caching_check == 0
     end
     self.points += 5 if caching_check == 0
+
+    self.save!
+  end
+
+  ####################
+  # SAFETY TESTS     #
+  ####################
+
+  def safety_check current_user
+
+    # URL CANONICALIZATION TEST
+
+    # IP CANONICALIZATION TEST
+
+    # SAFE URL TEST
+    request = Typhoeus.get("https://sb-ssl.google.com/safebrowsing/api/lookup?client=footprint&key=#{ENV['GOOGLE_API_KEY']}&appver=0.24&pver=3.1&url=#{current_user.website_url}", followlocation: true)
+    self.safe_url = Hash.new.tap do |h|
+      h[:title]       = 'Legittimità dell\'URL'
+      h[:subtitle]    = if request.response_code == 204
+                        'Il tuo sito è sicuro e non è stato segnalato per la presenza di malware o phishing.'
+                       elsif request.response_code == 200
+                        'Attenzione! Il tuo sito è segnalato come non sicuro e può contenere malware o phishing.'
+                       elsif request.response_code == 400
+                        'Errore. L\'URL inviato nella richiesta è invalido.'
+                       elsif request.response_code == 503
+                        'Servizio al momento non disponibile. Riprovare più tardi.'
+                        end
+      h[:description] = 'Google conserva una lista aggiornata di siti potenzialmente pericolosi o dannosi per l\'utente. Se il tuo sito è in questa lista, il tuo posizionamento nei motori di ricerca potrebbe risentirne notevolmente. Leggi di più sul servizio di Advisory offerto da Google cliccando <a href="http://code.google.com/apis/safebrowsing/safebrowsing_faq.html#whyAdvisory" target="_blank">qui</a>.'
+      h[:priority]    = 5
+      h[:pass]        = request.response_code == 204
+    end
+    self.points += 3 if request.response_code == 204
+
+    # PLAIN EMAIL TEST
 
     self.save!
   end

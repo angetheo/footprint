@@ -62,10 +62,10 @@
           <hr>
           <div class="row">
             <div class="col-lg-5">
-              <div class="widget navy-bg p-lg text-center">
+              <div class="widget yellow-bg p-lg text-center">
                 <div class="m-b-md">
                   <i class="fa fa-shield fa-4x"></i>
-                  <h1 class="m-xs">32 / 100</h1>
+                  <h1 class="m-xs"><%= @report.points %> / 100</h1>
                   <h3 class="font-bold no-margins">
                     Footprint Score
                   </h3>
@@ -78,9 +78,9 @@
                 <li>
                   <h2 class="no-margins"><%= @report.points %> / 100</h2>
                   <small>Punteggio footprintseo</small>
-                  <span class="label <%= @report.points <= 25 ? "label-warning" : "label-primary" %> pull-right">Dettagli</span>
+                  <a href="/dashboard?tab=seo"><span class="label <%= @report.points <= 50 ? "label-warning" : "label-primary" %> pull-right">Dettagli</span></a>
                   <div class="progress progress-mini">
-                    <div style="width: <%= @report.points %>%;" class="progress-bar <%= "progress-bar-warning" if @report.points <= 25 %>"></div>
+                    <div style="width: <%= @report.points %>%;" class="progress-bar <%= "progress-bar-warning" if @report.points <= 50 %>"></div>
                   </div>
                 </li>
                 <% else %>
@@ -90,19 +90,17 @@
                 </li>
                 <% end %>
                 <li>
-                  <h2 class="no-margins ">60 / 100</h2>
-                  <small>Punteggio footprintsocial</small>
-                  <span class="label label-primary pull-right">Dettagli</span>
+                  <h2 class="no-margins">- / 100</h2>
+                  <small>Punteggio footprintsocial non ancora disponibile.</small>
                   <div class="progress progress-mini">
-                    <div style="width: 60%;" class="progress-bar"></div>
+                    <div style="width: 0%;" class="progress-bar"></div>
                   </div>
                 </li>
                 <li>
-                  <h2 class="no-margins ">22 / 100</h2>
-                  <small>Punteggio footprintwords</small>
-                  <span class="label label-warning pull-right">Dettagli</span>
+                  <h2 class="no-margins">- / 100</h2>
+                  <small>Punteggio footprintwords non ancora disponibile.</small>
                   <div class="progress progress-mini">
-                    <div style="width: 22%;" class="progress-bar progress-bar-warning"></div>
+                    <div style="width: 0%;" class="progress-bar"></div>
                   </div>
                 </li>
               </ul>

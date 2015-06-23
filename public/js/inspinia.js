@@ -152,6 +152,7 @@ $(document).ready(function () {
     });
 
     // AJAX REQUEST TO ASSESS PAGE SPEED
+    // THIS SOLUTION DOESN'T WORK ON MOBILE DEVICES
     if (window.location.search.includes('seo')) {
         $.ajax({
             url: '/dashboard/speedtest'

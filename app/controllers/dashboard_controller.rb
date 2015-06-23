@@ -26,3 +26,11 @@ get '/dashboard' do
     redirect '/login'
   end
 end
+
+get '/profile/:user_id' do
+  if authenticate? && current_user.id == params[:user_id].to_i
+    erb :'dashboard/profile', :layout => :'dashboard/layout'
+  else
+    redirect '/dashboard'
+  end
+end
