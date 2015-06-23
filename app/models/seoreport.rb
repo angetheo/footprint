@@ -9,7 +9,7 @@ class Seoreport < ActiveRecord::Base
 
 
   def generate website_url
-    html_doc = Nokogiri::HTML(open('http://'+website_url.gsub(' ','')))
+    html_doc = Nokogiri::HTML(open(website_url))
     html_doc_with_script = html_doc.dup
     html_doc.xpath("//script").remove
 
@@ -51,19 +51,20 @@ class Seoreport < ActiveRecord::Base
                                 end
       test_hash[:description] = 'La descrizione del sito può essere inserita tramite i <code>meta</code> tags. E\' molto importante perché permette ai motori di ricerca di comprendere il contenuto del sito e fornisce un\'anteprima agli utenti che visualizzano il tuo sito nei risultati organici di ricerca.'
       test_hash[:priority]    = 2
-      test_hash[:pass]        = meta_description.size <= 160
+      test_hash[:pass]        = meta_description.size <= 160 && meta_description.size > 0
     end
     self.points += 1 if meta_description.size <= 160
 
 
     # RELEVANT KEYWORDS
-    formatted_html_doc = html_doc.at('body').text.strip.gsub(/\s+/, " ")
+    html_doc_no_style = html_doc.css("style").remove
+    formatted_html_doc = html_doc_no_style.css("body").text.strip.gsub(/\s+/, " ")
     words = {}
     formatted_html_doc.split(' ').each do |word|
       word.downcase!
       words[word] ? words[word] += 1 : words[word] = 1
     end
-    ['se','come','che','di','a','da','in','con','su','per','tra','fra','uno','una','un','dei','del','delle','della','degli','e','ed','è','i','o','la','le','il','gli','al','alla','agli','si','no','non','tuoi','tuo','nel','nella','negli','nelle',' ','=',':','-','//','+','"','""','{','}','"";','==','&','condividi','altra','altro','altre','altri','commenta','commenti','tutto','tutte','tutti'].each { |k| words.delete k }
+    ['se','come','che','di','a','da','in','con','su','per','tra','fra','uno','una','un','dei','del','delle','della','degli','e','ed','è','i','o','la','le','il','gli','al','alla','agli','si','no','non','tuoi','tuo','nel','nella','negli','nelle',' ','=',':','-','//','+','"','""','{','}','"";','==','&','condividi','altra','altro','altre','altri','commenta','commenti','tutto','tutte','tutti','ecco'].each { |k| words.delete k }
     self.keywords = Hash[words.sort_by { |k,v| -v }[0..4]].keys.join(', ')
 
 
@@ -84,7 +85,7 @@ class Seoreport < ActiveRecord::Base
 
 
     #ROBOTS CHECK
-    request = Typhoeus.get(@user.website_url+'/robots.txt')
+    request = Typhoeus.get(@user.website_url+'robots.txt')
     self.robots = Hash.new.tap do |test_hash|
       test_hash[:title]       = 'File robots.txt'
       test_hash[:subtitle]    = request.response_code != 404 ? "Ottimo, stai utilizzando il file robots.txt!" : "Sembra che tu non stia utilizzando il file robots.txt!"
@@ -96,8 +97,8 @@ class Seoreport < ActiveRecord::Base
 
 
     #SITEMAP XML CHECK
-    request1 = Typhoeus.get(@user.website_url+'/sitemap.xml')
-    request2 = Typhoeus.get(@user.website_url+'/sitemap.xml.gz')
+    request1 = Typhoeus.get(@user.website_url+'sitemap.xml')
+    request2 = Typhoeus.get(@user.website_url+'sitemap.xml.gz')
     self.sitemap = Hash.new.tap do |test_hash|
       test_hash[:title]       = 'Sitemap XML'
       test_hash[:subtitle]    = request1.response_code != 404 || request2.response_code != 404 ? "Stai utilizzando una Sitemap!" : "Non riusciamo a trovare una Sitemap. Inseriscila al più presto."
@@ -112,7 +113,6 @@ class Seoreport < ActiveRecord::Base
     img_tags = html_doc.css('img').size
     alt_tags = html_doc.css('img').map{ |i| i['alt']}.size
     alt_to_img_ratio = alt_tags/img_tags.to_f
-
     self.alt_tags = Hash.new.tap do |test_hash|
       test_hash[:percentage]  = (alt_to_img_ratio*100).to_i.to_s+"%"
       test_hash[:title]       = 'Accessibilità immagini'
@@ -138,7 +138,8 @@ class Seoreport < ActiveRecord::Base
 
 
     #FAVICON CHECK
-    default_favicon_request = Typhoeus.get(@user.website_url+'/favicon.ico')
+    #MESSY CODE. IMPROVE
+    default_favicon_request = Typhoeus.get(@user.website_url+'favicon.ico')
     link_rel_icon_elements = html_doc.xpath('//link[contains(@rel,"icon")]')
     custom_favicon_url = link_rel_icon_elements.empty? ? nil : link_rel_icon_elements.first['href']
     favicon_url = ""
@@ -146,10 +147,10 @@ class Seoreport < ActiveRecord::Base
       if Typhoeus.get(custom_favicon_url).response_code == 200
         favicon_url = custom_favicon_url
       elsif Typhoeus.get(@user.website_url+custom_favicon_url).response_code == 200
-        favicon_url = 'http://'+@user.website_url+custom_favicon_url
+        favicon_url = @user.website_url+custom_favicon_url
       end
     elsif default_favicon_request.response_code == 200
-      favicon_url = @user.website_url+'/favicon.ico'
+      favicon_url = @user.website_url+'favicon.ico'
     end
     self.favicon_url = Hash.new.tap do |test_hash|
       test_hash[:favicon_url] = favicon_url
@@ -194,7 +195,7 @@ class Seoreport < ActiveRecord::Base
     self.points += 1 if self.google_index > 5
 
     #GOOGLE BACKLINKS
-    self.google_backlinks = PageRankr.backlinks(@user.website_url, :google)[:google].nil? ? 0 : PageRankr.index(@user.website_url, :google)[:google]
+    self.google_backlinks = PageRankr.backlinks(@user.website_url, :google)[:google].nil? ? 0 : PageRankr.backlinks(@user.website_url, :google)[:google]
     self.points += 1 if self.google_backlinks > 50
 
     self.save!
@@ -214,17 +215,19 @@ class Seoreport < ActiveRecord::Base
     pagespeedonline = client.discovered_api('pagespeedonline','v2')
     result = client.execute(
         api_method: pagespeedonline.pagespeedapi.runpagespeed,
-        parameters: {url: 'http://'+current_user.website_url}
+        parameters: {url: current_user.website_url}
     )
     stop = Time.new
     response_data = result.data
     response_time = stop-start
 
+
     # LOAD TIME (DOES NOT COUNT AS A TEST)
     self.load_time = response_time
 
+
     # PAGE SIZE TEST
-    total_page_size = (response_data.pageStats.htmlResponseBytes + response_data.pageStats.cssResponseBytes + response_data.pageStats.imageResponseBytes + response_data.pageStats.javascriptResponseBytes + response_data.pageStats.otherResponseBytes)/1024.0/1024.0
+    total_page_size = (response_data.pageStats['htmlResponseBytes'].to_i + response_data.pageStats['cssResponseBytes'].to_i + response_data.pageStats['imageResponseBytes'] + response_data.pageStats['javascriptResponseBytes'] + response_data.pageStats['otherResponseBytes'])/1024.0/1024.0
     self.total_page_size = Hash.new.tap do |h|
       h[:total_page_size] = total_page_size
       h[:title]           = 'Dimensione totale della pagina'
@@ -238,17 +241,17 @@ class Seoreport < ActiveRecord::Base
 
     # HTTP CALLS TEST
     self.assets = Hash.new.tap do |h|
-      h[:total] = response_data.pageStats.numberStaticResources
-      h[:css]   = response_data.pageStats.numberCssResources
-      h[:js]    = response_data.pageStats.numberJsResources
-      h[:img]   = response_data.pageStats.numberStaticResources - response_data.pageStats.numberCssResources - response_data.pageStats.numberJsResources - 1 # HTML DOC
+      h[:total] = response_data.pageStats['numberStaticResources'].to_i
+      h[:css]   = response_data.pageStats['numberCssResources'].to_i
+      h[:js]    = response_data.pageStats['numberJsResources'].to_i
+      h[:img]   = response_data.pageStats['numberStaticResources'].to_i - response_data.pageStats['numberCssResources'].to_i - response_data.pageStats['numberJsResources'].to_i - 1 # HTML DOC
       h[:title] = 'Numero di risorse statiche'
-      h[:subtitle] = response_data.pageStats.numberStaticResources.to_i <= 90 ? 'Il numero di richieste è ridotto e in linea con gli standard.' : 'Il numero di risorse statiche è molto elevato e potrebbe rallentare il caricamento della pagina.'
+      h[:subtitle] = response_data.pageStats['numberStaticResources'].to_i <= 90 ? 'Il numero di richieste è ridotto e in linea con gli standard.' : 'Il numero di risorse statiche è molto elevato e potrebbe rallentare il caricamento della pagina.'
       h[:description] = 'Le risorse statiche sono, tra le altre, fogli di stile, file JavaScript e immagini che vengono caricati dal browser per mostrare i contenuti delle pagine. Alcune di queste risorse possono influire significativamente sulla dimensione totale, ed è sempre meglio ridurre al minimo il numero di risorse da chiedere al server per massimizzare la velocità di caricamento.'
       h[:priority]    = 3
-      h[:pass]  = response_data.pageStats.numberStaticResources.to_i <= 90 ? 'true' : 'warning'
+      h[:pass]  = response_data.pageStats['numberStaticResources'].to_i <= 90 ? 'true' : 'warning'
     end
-    self.points += 5 if response_data.pageStats.numberStaticResources.to_i <= 90
+    self.points += 5 if response_data.pageStats['numberStaticResources'].to_i <= 90
 
 
     # ASSET MINIFICATION TEST

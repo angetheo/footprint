@@ -3,7 +3,7 @@
 <!-- DASHBOARD HEADER -->
 <div class="row border-bottom white-bg dashboard-header">
   <div class="col-lg-4">
-    <h2><i class="fa fa-desktop"></i> &nbsp;<%= current_user.website_url.gsub('www.','') %></h2>
+    <h2><%= @report.favicon_url['favicon_url'].empty? ? "<i class='fa fa-file-o'></i> " : "<img src='#{@report.favicon_url['favicon_url']}' class='img-icon-32'>" %> &nbsp;<%= URI(current_user.website_url).host %></h2>
     <small><i class="fa fa-times"></i> Non verificato. <span class="text-navy">Verifica ora il tuo business.</span></small>
     <hr>
     <a href="/demoseo" class="btn btn-primary btn-xs">Cancella sito e ripeti analisi</a> &nbsp;
@@ -12,23 +12,23 @@
     <ul class="stat-list m-t">
       <li>
         <small><i class="fa fa-check"></i> Test passati</small>
-        <span class="label label-primary pull-right"><%= tests[:pass] %></span>
+        <span class="label label-primary pull-right" id="label-pass"><%= tests[:pass] %></span>
         <div class="progress progress-mini">
-          <div style="width: <%= (tests[:pass].to_i/tests[:total].to_f*100).to_i.to_s+"%" %>;" class="progress-bar"></div>
+          <div style="width: <%= (tests[:pass].to_i/tests[:total].to_f*100).to_i.to_s+"%" %>;" class="progress-bar" id="progress-pass"></div>
         </div>
       </li>
       <li>
         <small><i class="fa fa-warning"></i> Aspetti da migliorare</small>
-        <span class="label label-warning pull-right"><%= tests[:warning] %></span>
+        <span class="label label-warning pull-right" id="label-warning"><%= tests[:warning] %></span>
         <div class="progress progress-mini">
-          <div style="width: <%= (tests[:warning].to_i/tests[:total].to_f*100).to_i.to_s+"%" %>;" class="progress-bar progress-bar-warning"></div>
+          <div style="width: <%= (tests[:warning].to_i/tests[:total].to_f*100).to_i.to_s+"%" %>;" class="progress-bar progress-bar-warning" id="progress-warning"></div>
         </div>
       </li>
       <li>
         <small><i class="fa fa-times"></i> Test non passati</small>
-        <span class="label label-danger pull-right"><%= tests[:fail] %></span>
+        <span class="label label-danger pull-right" id="label-fail"><%= tests[:fail] %></span>
         <div class="progress progress-mini">
-          <div style="width: <%= (tests[:fail].to_i/tests[:total].to_f*100).to_i.to_s+"%" %>;" class="progress-bar progress-bar-danger"></div>
+          <div style="width: <%= (tests[:fail].to_i/tests[:total].to_f*100).to_i.to_s+"%" %>;" class="progress-bar progress-bar-danger" id="progress-fail"></div>
         </div>
       </li>
     </ul>
@@ -52,8 +52,9 @@
 <div class="wrapper wrapper-content animated fadeInRight">
   <div class="row">
 
-    <!-- STRUCTURE CHECKS -->
     <div class="col-lg-6">
+
+    <!-- STRUCTURE CHECKS -->
       <div class="ibox float-e-margins">
         <div class="ibox-title">
           <h5>Report Struttura</h5>
@@ -231,7 +232,7 @@
               </div>
               <div class="col-md-2 text-right">
                 <% if @report.favicon_url['favicon_url'] != "" %>
-                <img class="img-icon" src="<%= @report.favicon_url['favicon_url'] %>">
+                <img class="img-icon-16" src="<%= @report.favicon_url['favicon_url'] %>">
                 <% else %>
                 <span class="text-danger font-bold"><i class="fa fa-times"></i></span>
                 <% end %>
@@ -333,7 +334,7 @@
           <p class="text-navy font-bold"><%= current_user.website_url %></p>
           <p><%= @report.meta_description['page_meta_description'][0..160] %></p>
           <hr>
-          <p><span class="font-bold text-navy">Parole chiave: </span> <small class="font-bold"><%= @report.keywords.split(', ').map(&:capitalize).join(' - ') %></small></p>
+          <p><span class="font-bold text-navy">Parole chiave: </span> <small class="font-bold"><%= @report.keywords == "" ? "Nessuna parola chiave significativa riscontrata." : @report.keywords.split(', ').map(&:capitalize).join(' - ') %></small></p>
         </div>
       </div>
       <div class="row">

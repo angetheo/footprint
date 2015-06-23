@@ -16,6 +16,8 @@ gem 'rake'
 
 gem 'puma'
 
+gem 'postrank-uri'
+
 # SEO STRUCTURE
 gem 'nokogiri'
 gem 'typhoeus'

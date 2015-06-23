@@ -1,5 +1,11 @@
 <div class="hidden" id="load-time"><%= @report.load_time %></div>
 <div class="hidden" id="tot-points"><%= @report.points %></div>
+<ul class="hidden">
+  <li id="test-pass"><%= tests(@report)[:pass] %></li>
+  <li id="test-fail"><%= tests(@report)[:fail] %></li>
+  <li id="test-warning"><%= tests(@report)[:warning] %></li>
+  <li id="test-total"><%= tests(@report)[:total] %></li>
+</ul>
 
 <div class="row">
   <div class="col-lg-6 text-center">

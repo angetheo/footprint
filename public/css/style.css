@@ -6433,6 +6433,10 @@ body.skin-3 {
 }
 
 /* Custom */
-.img-icon {
+.img-icon-16 {
   width:16px;
+}
+
+.img-icon-32 {
+  width:32px;
 }

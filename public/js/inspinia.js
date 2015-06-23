@@ -156,8 +156,23 @@ $(document).ready(function () {
         $.ajax({
             url: '/dashboard/speedtest'
         }).done(function(serverData){
+            // DISPLAY THE DATA IN THE PAGE SPEED DIV
             $('#ajax-pagespeed').html(serverData);
-            $('#seo-points').html($('#tot-points').html());
+            // STORE VARIABLES
+            $points = $('#tot-points').html();
+            $testPass = $('#test-pass').html();
+            $testWarning = $('#test-warning').html();
+            $testFail = $('#test-fail').html();
+            $testTotal = $('#test-total').html();
+            $('#seo-points').html($points);
+            // CHANGE THE VALUE OF THE PROGRESS BAR WITH DATA
+            $('#progress-pass').attr('style','width:'+Math.round($testPass/$testTotal*100)+'%');
+            $('#progress-warning').attr('style','width:'+Math.round($testWarning/$testTotal*100)+'%');
+            $('#progress-fail').attr('style','width:'+Math.round($testFail/$testTotal*100)+'%');
+            // CHANGE THE VALUE OF THE LABELS AS WELL
+            $('#label-pass').html($testPass);
+            $('#label-warning').html($testWarning);
+            $('#label-fail').html($testFail);
             var g1 = new JustGage({
               id: "gauge",
               value: parseFloat($('#load-time').html()),
@@ -184,9 +199,9 @@ $(document).ready(function () {
 // Minimalize menu when screen is less than 768px
 $(window).bind("resize", function () {
     if ($(this).width() < 769) {
-        $('body').addClass('body-small')
+        $('body').addClass('body-small');
     } else {
-        $('body').removeClass('body-small')
+        $('body').removeClass('body-small');
     }
 });
 

@@ -16,6 +16,8 @@ require 'sinatra/flash'
 require 'erb'
 require 'hirb'
 
+require 'postrank-uri'
+
 # SEO PART
 require 'open-uri'
 require 'nokogiri'

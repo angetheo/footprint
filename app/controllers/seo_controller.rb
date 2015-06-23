@@ -1,7 +1,10 @@
 put '/:user_id/website' do
 
+  # 0) URL NORMALIZATION
+  normalized_uri = PostRank::URI.clean(params[:website_url])
+
   # 1) CHECK THE STATUS OF THE WEBSITE FIRST
-  request = Typhoeus.get(params[:website_url])
+  request = Typhoeus.get(normalized_uri, followlocation: true)
   case request.response_code
   when 404
     flash[:error] = "<h3>Oops!</h3> Non siamo riusciti a trovare la pagina. Controlla di aver digitato correttamente l'indirizzo e riprova."
@@ -16,12 +19,12 @@ put '/:user_id/website' do
 
   # 2) ASSOCIATE THE WEBSITE WITH THE USER
   user = User.find(params[:user_id])
-  user.website_url = params[:website_url]
+  user.website_url = PostRank::URI.clean(request.effective_url)
   user.save!
 
   # 3) CREATE A NEW REPORT IF IT DOESN'T EXIST
   seo_report = Seoreport.find_or_create_by(user_id: params[:user_id])
-  seo_report.generate(params[:website_url])
+  seo_report.generate(PostRank::URI.clean(request.effective_url))
 
   redirect '/dashboard?tab=seo'
 end
